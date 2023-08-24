@@ -38,14 +38,20 @@ Render the formset using the `inline_formset` template tag from the `mizdb_inlin
     {% bootstrap_javascript %}
 </head>
 <body>
-<form class="container" method="post">
+<form class="container mt-3" method="post">
 {% csrf_token %}
 
 {% bootstrap_form form %}
 {% inline_formset formset layout="horizontal" %}
-{% bootstrap_button button_type="submit" content="OK" %}
-{% bootstrap_button button_type="reset" content="Cancel" %}
+{% bootstrap_button button_type="submit" button_class="success" content="Save" %}
+{% bootstrap_button button_type="reset" button_class="warning" content="Reset" %}
 </form>
 </body>
 </html>
+```
+## Demo
+Start demo server:
+```shell
+make init-demo
+python demo/manage.py runserver
 ```
