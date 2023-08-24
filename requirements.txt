@@ -1,0 +1,4 @@
+Django
+django_bootstrap5
+black
+ruff
