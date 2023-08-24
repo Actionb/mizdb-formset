@@ -1,3 +1,7 @@
+.PHONY: test
+test:
+	pytest --cov --cov-config=./tests/.coveragerc --cov-report=term-missing tests
+
 .PHONY: reformat
 reformat:
 	ruff check . --fix

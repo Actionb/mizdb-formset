@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load django_bootstrap5 mizdb_inlines %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MIZDB Inline Formset Demo</title>
+    {{ form.media }}
+    {{ formset.media }}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body class="container">
+<h2>{{ header }}</h2>
+<form method="post">
+{% csrf_token %}
+
+{% bootstrap_form form %}
+{% inline_formset formset layout="horizontal" %}
+{% bootstrap_button button_type="submit" button_class="btn-success" content="Save" %}
+{% bootstrap_button button_type="reset" button_class="btn-warning" content="Reset" %}
+</form>
+</body>
+</html>
