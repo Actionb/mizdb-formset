@@ -49,9 +49,15 @@ Render the formset using the `inline_formset` template tag from the `mizdb_inlin
 </body>
 </html>
 ```
-## Demo
-Start demo server:
-```shell
-make init-demo
-python demo/manage.py runserver
+
+## Development & Demo
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+make init
 ```
+
+See the demo for a preview: run `make init-demo` and then start the demo server `python demo/manage.py runserver`.
+
+Run tests with `make test`. To install required browsers for playwright: `playwright install`.
