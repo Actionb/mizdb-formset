@@ -5,6 +5,11 @@ from django_bootstrap5.core import get_field_renderer
 from django_bootstrap5.renderers import FormRenderer, FormsetRenderer
 
 
+# FIXME: need a container/wrapper for the entire formset, so multiple formsets
+#  can be used (and an add button can be assigned to each one)
+# TODO: need to add an "empty" template?
+
+
 class DeletableFormRenderer(FormRenderer):
     """
     Renderer for the forms of a formset that can be deleted.
@@ -14,6 +19,8 @@ class DeletableFormRenderer(FormRenderer):
     """
 
     def get_container_class(self):
+        # FIXME: rename "formset-container": this isn't the container for the
+        #  formset - just the form + delete
         return "row mb-1 align-items-center py-1 formset-container"
 
     def get_field_container_class(self):
