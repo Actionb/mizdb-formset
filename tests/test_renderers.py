@@ -42,15 +42,15 @@ def formset_renderer(formset):
 
 
 @pytest.fixture
-def renderered_form(form_renderer):
+def rendered_form(form_renderer):
     """Render the form using form_renderer.render()."""
     return form_renderer.render()
 
 
 @pytest.fixture
-def form_soup(renderered_form):
+def form_soup(rendered_form):
     """Return the soup of the rendered form."""
-    return BeautifulSoup(renderered_form, features="html.parser")
+    return BeautifulSoup(rendered_form, features="html.parser")
 
 
 @pytest.fixture
@@ -110,9 +110,7 @@ def test_form_renderer_renders_form_fields(field_container, prefixed_name, field
 
 
 @pytest.mark.parametrize("field_name", ["DELETE"])
-def test_form_renderer_renders_deletion_checkbox(
-    fields_soup, prefixed_name, field_name
-):
+def test_form_renderer_renders_deletion_checkbox(fields_soup, prefixed_name, field_name):
     """Assert that the form renderer renders the deletion checkbox."""
     assert fields_soup.find_all("input", type="checkbox", attrs={"name": prefixed_name})
 
@@ -134,9 +132,7 @@ def test_formset_renderer_uses_own_form_renderer(formset_renderer):
     Assert that the formset renderer renders the forms with the expected form
     renderer.
     """
-    with mock.patch(
-        "mizdb_inlines.renderers.DeletableFormRenderer.render"
-    ) as render_mock:
+    with mock.patch("mizdb_inlines.renderers.DeletableFormRenderer.render") as render_mock:
         render_mock.return_value = ""
         formset_renderer.render()
     render_mock.asser_called()
