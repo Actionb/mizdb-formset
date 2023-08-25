@@ -21,10 +21,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.auth",
+    "django.contrib.auth",  # TODO: remove - don't need auth
     "django.contrib.contenttypes",
     "django.contrib.sessions",
-    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django_bootstrap5",
     "mizdb_inlines",
     "tests.testapp",
 ]
@@ -39,7 +40,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = None
+ROOT_URLCONF = "tests.testapp.urls"
 
 TEMPLATES = [
     {
@@ -56,9 +57,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = "testproj.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
