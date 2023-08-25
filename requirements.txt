@@ -6,4 +6,6 @@ coverage
 pytest
 pytest-django
 pytest-cov
+pytest-playwright
+playwright
 beautifulsoup4
