@@ -42,6 +42,9 @@ class DeletableFormRenderer(FormRenderer):
         for field in self.form:
             if field.name == DELETION_FIELD_NAME:
                 # Render the widget without the label and without the wrapper:
+                # TODO: implement a renderer for the deletion field, which adds
+                #  the delete button (etc.). That way, FormsetDeletionWidget
+                #  and the formset override in MIZInlineFormset could be omitted.
                 rendered_delete = renderer(field, **kwargs).get_field_html()
             else:
                 rendered_fields += renderer(field, **kwargs).render()
