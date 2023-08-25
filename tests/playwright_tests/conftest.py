@@ -2,11 +2,9 @@ import os
 import re
 
 import pytest
-
 from django.urls import reverse
 
 from tests.testapp.models import Contact, PhoneNumber
-
 
 # https://github.com/microsoft/playwright-python/issues/439
 # https://github.com/microsoft/playwright-pytest/issues/29#issuecomment-731515676
