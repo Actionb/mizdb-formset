@@ -15,5 +15,5 @@ class FormsetDeletionWidget(forms.CheckboxInput):
         super().__init__(attrs, check_test)
 
     class Media:
-        css = {"all": ["/static/mizdb_inlines/css/delete.css"]}
-        js = ["/static/mizdb_inlines/js/delete.js"]
+        css = {"all": ["mizdb_inlines/css/delete.css"]}
+        js = ["mizdb_inlines/js/delete.js"]

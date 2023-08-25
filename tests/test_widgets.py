@@ -70,12 +70,12 @@ def test_init_adds_delete_classes(widget, css_classes):
 
 def test_media_css(widget):
     """Assert that the required CSS is included in the widget's media."""
-    assert "/static/mizdb_inlines/css/delete.css" in widget.media._css["all"]
+    assert "mizdb_inlines/css/delete.css" in widget.media._css["all"]
 
 
 def test_media_js(widget):
     """Assert that the required Javascript is included in the widget's media."""
-    assert "/static/mizdb_inlines/js/delete.js" in widget.media._js
+    assert "mizdb_inlines/js/delete.js" in widget.media._js
 
 
 def test_render_includes_checkbox(checkbox_input):
