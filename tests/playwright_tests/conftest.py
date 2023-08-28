@@ -39,14 +39,17 @@ def test_data(contact_obj, home_number, work_number):
 
 @pytest.fixture
 def submit_button(formset_page):
+    """Return the form's submit button."""
     return formset_page.get_by_role("button", name=re.compile("save", re.IGNORECASE))
 
 
 @pytest.fixture
 def forms(formset_page):
-    return formset_page.locator(".formset-container")
+    """Return the formset forms."""
+    return formset_page.locator(".form-container")
 
 
 @pytest.fixture
 def home_number_form(forms):
+    """Return the form with the 'Home' number."""
     return forms.first

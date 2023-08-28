@@ -7,6 +7,8 @@ from django.forms import formset_factory
 
 from mizdb_inlines.renderers import DeletableFormRenderer, DeletableFormsetRenderer
 
+FORMSET_PREFIX = "foo_bar"
+
 
 class Form(forms.Form):
     foo = forms.CharField()
@@ -15,7 +17,32 @@ class Form(forms.Form):
 
 @pytest.fixture
 def formset():
-    return formset_factory(form=Form, can_delete=True, extra=1)()
+    """Return a Django formset instance."""
+    return formset_factory(form=Form, can_delete=True, extra=1)(prefix=FORMSET_PREFIX)
+
+
+@pytest.fixture
+def formset_renderer(formset):
+    """Return a FormRenderer instance for the given formset."""
+    return DeletableFormsetRenderer(formset)
+
+
+@pytest.fixture
+def rendered_formset(formset_renderer):
+    """Render a formset using formset_renderer.render()."""
+    return formset_renderer.render()
+
+
+@pytest.fixture
+def formset_html(rendered_formset):
+    """Return the HTML of the rendered formset."""
+    return BeautifulSoup(rendered_formset, features="html.parser")
+
+
+@pytest.fixture
+def formset_container(formset_html):
+    """Return the div that wraps the formset."""
+    return formset_html.div
 
 
 @pytest.fixture
@@ -25,25 +52,14 @@ def form(formset):
 
 
 @pytest.fixture
-def prefixed_name(form, field_name):
-    """Return the field name with the form prefix appended."""
-    return form.add_prefix(field_name)
-
-
-@pytest.fixture
 def form_renderer(form):
-    """Return a DeletableFormRenderer instance."""
+    """Return a DeletableFormRenderer instance for the given form."""
     return DeletableFormRenderer(form)
 
 
 @pytest.fixture
-def formset_renderer(formset):
-    return DeletableFormsetRenderer(formset)
-
-
-@pytest.fixture
 def rendered_form(form_renderer):
-    """Render the form using form_renderer.render()."""
+    """Render a form using form_renderer.render()."""
     return form_renderer.render()
 
 
@@ -51,6 +67,12 @@ def rendered_form(form_renderer):
 def form_html(rendered_form):
     """Return the HTML of the rendered form."""
     return BeautifulSoup(rendered_form, features="html.parser")
+
+
+@pytest.fixture
+def prefixed_name(form, field_name):
+    """Return the field name with the form prefix appended."""
+    return form.add_prefix(field_name)
 
 
 @pytest.fixture
@@ -67,7 +89,7 @@ def rendered_fields(form_renderer):
 
 @pytest.fixture
 def fields_html(rendered_fields):
-    """Return the HTML of the rendered fields."""
+    """Return the HTML of the rendered form fields."""
     return BeautifulSoup(rendered_fields, features="html.parser")
 
 
@@ -83,12 +105,7 @@ def delete_wrapper(fields_html):
     return list(fields_html.children)[-1]
 
 
-def test_form_renderer_adds_container(form_container):
-    """Assert that the form rendered is surrounded by a container."""
-    assert form_container
-
-
-@pytest.mark.parametrize("css_class", ["row", "formset-container"])
+@pytest.mark.parametrize("css_class", ["row", "form-container"])
 def test_form_container_css_classes(form_container, css_class):
     """Assert that the form container has the expected CSS classes."""
     assert css_class in form_container.attrs["class"]
@@ -104,26 +121,24 @@ def test_fields_rendered_as_two_divs(fields_html):
 
 
 @pytest.mark.parametrize("field_name", Form.base_fields)
-def test_form_renderer_renders_form_fields(field_container, prefixed_name, field_name):
+def test_form_fields_rendered(field_container, prefixed_name, field_name):
     """Assert that the form renderer renders the form fields."""
     assert field_container.find_all("input", type="text", attrs={"name": prefixed_name})
 
 
 @pytest.mark.parametrize("field_name", ["DELETE"])
-def test_form_renderer_renders_deletion_checkbox(
-    fields_html, prefixed_name, field_name
-):
+def test_deletion_checkbox_rendered(fields_html, prefixed_name, field_name):
     """Assert that the form renderer renders the deletion checkbox."""
     assert fields_html.find_all("input", type="checkbox", attrs={"name": prefixed_name})
 
 
-@pytest.mark.parametrize("css_class", ["col", "formset-form"])
+@pytest.mark.parametrize("css_class", ["col", "fields-container"])
 def test_field_container_css_classes(field_container, css_class):
     """Assert that the field container div contains the expected CSS classes."""
     assert css_class in field_container.attrs["class"]
 
 
-@pytest.mark.parametrize("css_class", ["col-1", "delete-wrapper"])
+@pytest.mark.parametrize("css_class", ["col-1", "delete-container"])
 def test_delete_wrapper_css_class(delete_wrapper, css_class):
     """Assert that the deletion wrapper div contains the expected CSS classes."""
     assert css_class in delete_wrapper.attrs["class"]
@@ -134,9 +149,13 @@ def test_formset_renderer_uses_own_form_renderer(formset_renderer):
     Assert that the formset renderer renders the forms with the expected form
     renderer.
     """
-    with mock.patch(
-        "mizdb_inlines.renderers.DeletableFormRenderer.render"
-    ) as render_mock:
+    with mock.patch("mizdb_inlines.renderers.DeletableFormRenderer.render") as render_mock:
         render_mock.return_value = ""
         formset_renderer.render()
     render_mock.asser_called()
+
+
+@pytest.mark.parametrize("css_class", ["formset-container", FORMSET_PREFIX])
+def test_formset_container_css_class(formset_container, css_class):
+    """Assert that the formset container contains the expected CSS classes."""
+    assert css_class in formset_container.attrs["class"]
