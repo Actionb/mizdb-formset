@@ -41,21 +41,21 @@ def rendered_widget(widget):
 
 
 @pytest.fixture
-def soup(rendered_widget):
-    """Parse the rendered_widget through BeautifulSoup and return the soup."""
+def widget_html(rendered_widget):
+    """Return the HTML of the rendered widget."""
     return BeautifulSoup(rendered_widget, features="html.parser")
 
 
 @pytest.fixture
-def checkbox_input(soup):
+def checkbox_input(widget_html):
     """Return the checkbox input of the rendered widget."""
-    return soup.input
+    return widget_html.input
 
 
 @pytest.fixture
-def delete_button(soup):
+def delete_button(widget_html):
     """Return the delete button of the rendered widget."""
-    return soup.button
+    return widget_html.button
 
 
 @pytest.mark.parametrize("css_classes", ["", "my-class"])

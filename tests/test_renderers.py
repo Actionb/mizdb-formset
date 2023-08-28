@@ -48,15 +48,15 @@ def rendered_form(form_renderer):
 
 
 @pytest.fixture
-def form_soup(rendered_form):
-    """Return the soup of the rendered form."""
+def form_html(rendered_form):
+    """Return the HTML of the rendered form."""
     return BeautifulSoup(rendered_form, features="html.parser")
 
 
 @pytest.fixture
-def form_container(form_soup):
+def form_container(form_html):
     """Return the container of the rendered form."""
-    return form_soup.div
+    return form_html.div
 
 
 @pytest.fixture
@@ -66,21 +66,21 @@ def rendered_fields(form_renderer):
 
 
 @pytest.fixture
-def fields_soup(rendered_fields):
-    """Return the soup of the rendered fields."""
+def fields_html(rendered_fields):
+    """Return the HTML of the rendered fields."""
     return BeautifulSoup(rendered_fields, features="html.parser")
 
 
 @pytest.fixture
-def field_container(fields_soup):
+def field_container(fields_html):
     """Return the container of the rendered fields."""
-    return list(fields_soup.children)[0]
+    return list(fields_html.children)[0]
 
 
 @pytest.fixture
-def delete_wrapper(fields_soup):
+def delete_wrapper(fields_html):
     """Return the wrapper for the delete button."""
-    return list(fields_soup.children)[-1]
+    return list(fields_html.children)[-1]
 
 
 def test_form_renderer_adds_container(form_container):
@@ -94,13 +94,13 @@ def test_form_container_css_classes(form_container, css_class):
     assert css_class in form_container.attrs["class"]
 
 
-def test_fields_rendered_as_two_divs(fields_soup):
+def test_fields_rendered_as_two_divs(fields_html):
     """
     Assert that the form renderer renders the formset forms with two divs;
     one for the form and one for the deletion button.
     """
-    assert len(fields_soup.contents) == 2
-    assert all(e.name == "div" for e in fields_soup.contents)
+    assert len(fields_html.contents) == 2
+    assert all(e.name == "div" for e in fields_html.contents)
 
 
 @pytest.mark.parametrize("field_name", Form.base_fields)
@@ -110,9 +110,11 @@ def test_form_renderer_renders_form_fields(field_container, prefixed_name, field
 
 
 @pytest.mark.parametrize("field_name", ["DELETE"])
-def test_form_renderer_renders_deletion_checkbox(fields_soup, prefixed_name, field_name):
+def test_form_renderer_renders_deletion_checkbox(
+    fields_html, prefixed_name, field_name
+):
     """Assert that the form renderer renders the deletion checkbox."""
-    assert fields_soup.find_all("input", type="checkbox", attrs={"name": prefixed_name})
+    assert fields_html.find_all("input", type="checkbox", attrs={"name": prefixed_name})
 
 
 @pytest.mark.parametrize("css_class", ["col", "formset-form"])
@@ -132,7 +134,9 @@ def test_formset_renderer_uses_own_form_renderer(formset_renderer):
     Assert that the formset renderer renders the forms with the expected form
     renderer.
     """
-    with mock.patch("mizdb_inlines.renderers.DeletableFormRenderer.render") as render_mock:
+    with mock.patch(
+        "mizdb_inlines.renderers.DeletableFormRenderer.render"
+    ) as render_mock:
         render_mock.return_value = ""
         formset_renderer.render()
     render_mock.asser_called()
