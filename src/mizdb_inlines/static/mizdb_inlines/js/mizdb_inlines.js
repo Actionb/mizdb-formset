@@ -22,18 +22,18 @@ window.addEventListener("DOMContentLoaded", () => {
     function deleteHandler(btn) {
         btn.addEventListener("click", (e) => {
             e.preventDefault()
-            wrapper = btn.parentNode.parentNode
-            formset = wrapper.parentNode
-            if (wrapper.classList.contains("extra-form") && isEmpty(wrapper)) {
-                wrapper.remove()
+            form = btn.parentNode.parentNode
+            formset = form.parentNode
+            if (form.classList.contains("extra-form") && isEmpty(form)) {
+                form.remove()
                 updateTotalCount(formset, getTotalCount(formset) - 1)
                 // TODO: update prefixes
             }
             else {
-                wrapper.classList.toggle("marked-for-removal")
-                checkbox = wrapper.querySelector(".delete-cb")
+                form.classList.toggle("marked-for-removal")
+                checkbox = form.querySelector(".delete-cb")
                 checkbox.checked = !checkbox.checked
-                wrapper.querySelectorAll(".form-control").forEach((elem) => {
+                form.querySelectorAll(".form-control").forEach((elem) => {
                     elem.disabled = !elem.disabled
                 })
             }
@@ -44,19 +44,18 @@ window.addEventListener("DOMContentLoaded", () => {
             e.preventDefault()
 
             addRow = btn.parentNode
-            formsetContainer = addRow.parentNode
+            formset = addRow.parentNode
 
-            template = addRow.querySelector(".empty-form > div")
-            copy = template.cloneNode(true)
-            formsetContainer.insertBefore(copy, addRow)
-            deleteHandler(copy.querySelector(".delete-btn"))
+            newForm = addRow.querySelector(".empty-form > div").cloneNode(true)
+            formset.insertBefore(newForm, addRow)
+            deleteHandler(newForm.querySelector(".delete-btn"))
 
             // Update management form
-            count = getTotalCount(formsetContainer) + 1
-            updateTotalCount(formsetContainer, count)
+            count = getTotalCount(formset) + 1
+            updateTotalCount(formset, count)
 
             // Update 'id', 'name' and 'for' attributes
-            copy.querySelectorAll("*").forEach((elem) => {
+            newForm.querySelectorAll("*").forEach((elem) => {
                 for (attr of ["id", "name", "for"]) {
                     if (elem.hasAttribute(attr)) {
                         elem.setAttribute(attr, elem.getAttribute(attr).replace("__prefix__", count))
