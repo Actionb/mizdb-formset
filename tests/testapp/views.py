@@ -4,6 +4,8 @@ from django.views.generic import UpdateView
 from mizdb_inlines.forms import MIZInlineFormset
 from tests.testapp.models import Contact, PhoneNumber
 
+FORMSET_PREFIX = "foo_bar"
+
 
 class ContactView(UpdateView):
     model = Contact
@@ -19,11 +21,11 @@ class ContactView(UpdateView):
             PhoneNumber,
             fields=["label", "number"],
             formset=MIZInlineFormset,
-            extra=3,
+            extra=1,
         )
 
     def get_formset(self, **kwargs):
-        return self.get_formset_class()(instance=self.object, **kwargs)
+        return self.get_formset_class()(instance=self.object, prefix=FORMSET_PREFIX, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

@@ -8,6 +8,10 @@ class Contact(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    class Meta:
+        verbose_name = "Contact"
+        verbose_name_plural = "Contacts"
+
 
 class PhoneNumber(models.Model):
     label = models.CharField(max_length=50)
@@ -16,3 +20,7 @@ class PhoneNumber(models.Model):
 
     def __str__(self):
         return f"{self.label}: {self.number}"
+
+    class Meta:
+        verbose_name = "Phone Number"
+        verbose_name_plural = "Phone Numbers"

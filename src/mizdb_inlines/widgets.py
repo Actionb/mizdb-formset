@@ -16,4 +16,3 @@ class FormsetDeletionWidget(forms.CheckboxInput):
 
     class Media:
         css = {"all": ["mizdb_inlines/css/delete.css"]}
-        js = ["mizdb_inlines/js/delete.js"]

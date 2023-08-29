@@ -3,22 +3,19 @@ from unittest import mock
 import pytest
 from bs4 import BeautifulSoup
 from django import forms
-from django.forms import formset_factory
 
 from mizdb_inlines.renderers import DeletableFormRenderer, DeletableFormsetRenderer
+from tests.testapp.models import PhoneNumber, Contact
 
 FORMSET_PREFIX = "foo_bar"
-
-
-class Form(forms.Form):
-    foo = forms.CharField()
-    bar = forms.CharField()
+FORMSET_FIELDS = ["label", "number"]
 
 
 @pytest.fixture
 def formset():
     """Return a Django formset instance."""
-    return formset_factory(form=Form, can_delete=True, extra=1)(prefix=FORMSET_PREFIX)
+    form_class = forms.inlineformset_factory(Contact, PhoneNumber, fields=FORMSET_FIELDS, can_delete=True, extra=1)
+    return form_class(prefix=FORMSET_PREFIX)
 
 
 @pytest.fixture
@@ -120,7 +117,7 @@ def test_fields_rendered_as_two_divs(fields_html):
     assert all(e.name == "div" for e in fields_html.contents)
 
 
-@pytest.mark.parametrize("field_name", Form.base_fields)
+@pytest.mark.parametrize("field_name", FORMSET_FIELDS)
 def test_form_fields_rendered(field_container, prefixed_name, field_name):
     """Assert that the form renderer renders the form fields."""
     assert field_container.find_all("input", type="text", attrs={"name": prefixed_name})
@@ -159,3 +156,13 @@ def test_formset_renderer_uses_own_form_renderer(formset_renderer):
 def test_formset_container_css_class(formset_container, css_class):
     """Assert that the formset container contains the expected CSS classes."""
     assert css_class in formset_container.attrs["class"]
+
+
+def test_formset_includes_add_button(formset_html):
+    """Assert that the formset includes an 'add another' button."""
+    assert formset_html.find_all("button", class_="add-btn")
+
+
+def test_formset_includes_form_template(formset_html):
+    """Assert that the formset includes an empty form template."""
+    assert formset_html.find_all("div", class_="empty-form d-none")

@@ -51,13 +51,14 @@ Then render the formset using the `inline_formset` template tag from the `mizdb_
 
 ```html
 <!DOCTYPE html>
-{% load mizdb_inlines django_bootstrap5 %}
+{% load static mizdb_inlines django_bootstrap5 %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>My Awesome Form</title>
     {{ form.media }}
     {{ formset.media }}
+    <script src="{% static 'mizdb_inlines/js/mizdb_inlines.js' %}"></script>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
 </head>

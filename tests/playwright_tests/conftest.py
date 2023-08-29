@@ -44,12 +44,24 @@ def submit_button(formset_page):
 
 
 @pytest.fixture
-def forms(formset_page):
-    """Return the formset forms."""
-    return formset_page.locator(".form-container")
+def formset(formset_page):
+    """Return the formset of the given page."""
+    return formset_page.locator(".formset-container")
+
+
+@pytest.fixture
+def forms(formset):
+    """Return the forms of the given formset."""
+    return formset.locator("> .form-container")
 
 
 @pytest.fixture
 def home_number_form(forms):
     """Return the form with the 'Home' number."""
     return forms.first
+
+
+@pytest.fixture
+def management_total(formset):
+    """Return the TOTAL_FORMS element of the management form."""
+    return formset.locator("[id$=TOTAL_FORMS]")

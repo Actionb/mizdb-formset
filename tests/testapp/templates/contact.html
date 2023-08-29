@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-{% load django_bootstrap5 mizdb_inlines %}
+{% load static django_bootstrap5 mizdb_inlines %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>MIZDB Inline Formset Demo</title>
     {{ form.media }}
     {{ formset.media }}
+    <script src="{% static 'mizdb_inlines/js/mizdb_inlines.js' %}"></script>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
 </head>
