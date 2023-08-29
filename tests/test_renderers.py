@@ -2,7 +2,7 @@ from unittest import mock
 
 import pytest
 from bs4 import BeautifulSoup
-from django import forms
+from django.forms import inlineformset_factory
 
 from mizdb_inlines.renderers import DeletableFormRenderer, MIZFormsetRenderer
 from tests.testapp.models import Contact, PhoneNumber
@@ -10,18 +10,34 @@ from tests.testapp.models import Contact, PhoneNumber
 FORMSET_PREFIX = "foo_bar"
 FORMSET_FIELDS = ["label", "number"]
 
+pytestmark = [pytest.mark.django_db]
+
+
+def get_formset_class(**kwargs):
+    defaults = {"fields": FORMSET_FIELDS, "can_delete": True, "extra": 1}
+    return inlineformset_factory(Contact, PhoneNumber, **{**defaults, **kwargs})
+
+
+def get_formset_renderer(formset):
+    """Return a FormRenderer instance for the given formset."""
+    return MIZFormsetRenderer(formset)
+
+
+def get_form_renderer(form):
+    """Return a DeletableFormRenderer instance for the given form."""
+    return DeletableFormRenderer(form)
+
 
 @pytest.fixture
-def formset():
+def formset(contact_obj):
     """Return a Django formset instance."""
-    form_class = forms.inlineformset_factory(Contact, PhoneNumber, fields=FORMSET_FIELDS, can_delete=True, extra=1)
-    return form_class(prefix=FORMSET_PREFIX)
+    return get_formset_class()(instance=contact_obj, prefix=FORMSET_PREFIX)
 
 
 @pytest.fixture
 def formset_renderer(formset):
-    """Return a FormRenderer instance for the given formset."""
-    return MIZFormsetRenderer(formset)
+    """Return a FormRenderer instance for the default test formset."""
+    return get_formset_renderer(formset)
 
 
 @pytest.fixture
@@ -57,8 +73,8 @@ def form(formset):
 
 @pytest.fixture
 def form_renderer(form):
-    """Return a DeletableFormRenderer instance for the given form."""
-    return DeletableFormRenderer(form)
+    """Return a DeletableFormRenderer instance for the default test form."""
+    return get_form_renderer(form)
 
 
 @pytest.fixture
