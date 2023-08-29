@@ -4,8 +4,8 @@ import pytest
 from bs4 import BeautifulSoup
 from django import forms
 
-from mizdb_inlines.renderers import DeletableFormRenderer, DeletableFormsetRenderer
-from tests.testapp.models import PhoneNumber, Contact
+from mizdb_inlines.renderers import DeletableFormRenderer, MIZFormsetRenderer
+from tests.testapp.models import Contact, PhoneNumber
 
 FORMSET_PREFIX = "foo_bar"
 FORMSET_FIELDS = ["label", "number"]
@@ -21,7 +21,7 @@ def formset():
 @pytest.fixture
 def formset_renderer(formset):
     """Return a FormRenderer instance for the given formset."""
-    return DeletableFormsetRenderer(formset)
+    return MIZFormsetRenderer(formset)
 
 
 @pytest.fixture
