@@ -43,8 +43,15 @@ def formset_container(formset_html):
 
 
 @pytest.fixture
+def formset_form_containers(formset_html):
+    """Return the divs that wrap the formset forms."""
+    return formset_html.find_all("div", class_="form-container")
+
+
+@pytest.fixture
 def form(formset):
-    """Return a form for the form renderer."""
+    """Return a formset form for the form renderer."""
+    # Note that the form has had the DELETE field added by Formset.add_fields
     return formset.forms[0]
 
 
@@ -100,6 +107,18 @@ def field_container(fields_html):
 def delete_wrapper(fields_html):
     """Return the wrapper for the delete button."""
     return list(fields_html.children)[-1]
+
+
+@pytest.fixture
+def empty_form(formset_form_containers):
+    """Return the empty form template."""
+    return formset_form_containers[-1]
+
+
+@pytest.fixture
+def extra_form(formset_form_containers):
+    """Return the extra form."""
+    return formset_form_containers[-2]
 
 
 @pytest.mark.parametrize("css_class", ["row", "form-container"])
@@ -165,4 +184,14 @@ def test_formset_includes_add_button(formset_html):
 
 def test_formset_includes_form_template(formset_html):
     """Assert that the formset includes an empty form template."""
-    assert formset_html.find_all("div", class_="empty-form d-none")
+    assert formset_html.find_all("div", class_="empty-form")
+
+
+def test_extra_form_has_extra_class(extra_form):
+    """Assert that the extra forms have the expected CSS class."""
+    assert "extra-form" in extra_form.attrs["class"]
+
+
+def test_form_template_has_extra_class(empty_form):
+    """Assert that the empty form template has the expected CSS class."""
+    assert "extra-form" in empty_form.attrs["class"]

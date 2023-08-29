@@ -29,12 +29,19 @@ class DeletableFormRenderer(FormRenderer):
     fields and a narrower (col-1) column for the delete button.
     """
 
+    def __init__(self, form, is_extra=False, **kwargs):
+        super().__init__(form, **kwargs)
+        self.is_extra = is_extra
+
     def get_form_container_class(self):
         """
         Return the CSS classes for the div that wraps the form fields and the
         delete button.
         """
-        return "row mb-1 align-items-center py-1 form-container"
+        classes = "row mb-1 align-items-center py-1 form-container"
+        if self.is_extra:
+            classes += " extra-form"
+        return classes
 
     def get_field_container_class(self):
         """Return the CSS classes for the div that wraps the form fields."""
@@ -97,7 +104,9 @@ class MIZFormsetRenderer(FormsetRenderer):
         Return the HTML for the div with the add button and the empty form
         template.
         """
-        empty_form = DeletableFormRenderer(self.formset.empty_form, **self.get_kwargs()).render()
+        kwargs = self.get_kwargs()
+        kwargs["is_extra"] = True
+        empty_form = DeletableFormRenderer(self.formset.empty_form, **kwargs).render()
         return mark_safe(
             '<div class="add-row">'
             f'<div class="empty-form d-none">{empty_form}</div>'
@@ -108,6 +117,7 @@ class MIZFormsetRenderer(FormsetRenderer):
         rendered_forms = mark_safe("")
         kwargs = self.get_kwargs()
         for form in self.formset.forms:
+            kwargs["is_extra"] = form in self.formset.extra_forms
             rendered_forms += DeletableFormRenderer(form, **kwargs).render()
         return rendered_forms
 
