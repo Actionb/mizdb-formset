@@ -3,6 +3,8 @@ import re
 import pytest
 from playwright.sync_api import expect
 
+from tests.testapp.views import FORMSET_PREFIX
+
 
 def get_delete_button(form):
     return form.locator(".delete-btn")
@@ -56,3 +58,42 @@ def test_delete_updates_total_forms(extra_forms, management_total):
     btn = get_delete_button(extra_forms.first)
     btn.click()
     assert int(management_total.get_attribute("value")) == count - 1
+
+
+def test_id_prefix_indices_updated_when_form_removed(extra_forms, management_total):
+    """
+    Assert that the prefix indices of following form control ids are updated
+    when a previous form was removed from the DOM.
+    """
+    btn = get_delete_button(extra_forms.first)
+    btn.click()
+    index = int(management_total.get_attribute("value")) - 1
+    for form in extra_forms.all():
+        for element in form.locator("input,textarea,select").all():
+            expect(element).to_have_attribute("id", re.compile(rf"^id_{FORMSET_PREFIX}-{index}"))
+
+
+def test_name_prefix_indices_updated_when_form_removed(extra_forms, management_total):
+    """
+    Assert that the prefix indices of following form control names are updated
+    when a previous form was removed from the DOM.
+    """
+    btn = get_delete_button(extra_forms.first)
+    btn.click()
+    index = int(management_total.get_attribute("value")) - 1
+    for form in extra_forms.all():
+        for element in form.locator("input,textarea,select").all():
+            expect(element).to_have_attribute("name", re.compile(rf"^{FORMSET_PREFIX}-{index}"))
+
+
+def test_label_prefix_indices_updated_when_form_removed(extra_forms, management_total):
+    """
+    Assert that the prefix indices of following form labels are updated when
+    a previous form was removed from the DOM.
+    """
+    btn = get_delete_button(extra_forms.first)
+    btn.click()
+    index = int(management_total.get_attribute("value")) - 1
+    for form in extra_forms.all():
+        for element in form.locator("label").all():
+            expect(element).to_have_attribute("for", re.compile(rf"^id_{FORMSET_PREFIX}-{index}"))

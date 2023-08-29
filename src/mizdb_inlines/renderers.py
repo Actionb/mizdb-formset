@@ -123,8 +123,9 @@ class MIZFormsetRenderer(FormsetRenderer):
 
     def render(self):
         return format_html(
-            '<div class="{formset_container}">{html}{add_row}</div>',
+            '<div class="{formset_container}" data-prefix={prefix}>{html}{add_row}</div>',
             formset_container=self.get_formset_container_class(),
+            prefix=self.formset.prefix,
             html=super().render(),
             add_row=self.get_add_row_html(),
         )

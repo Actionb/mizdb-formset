@@ -19,6 +19,26 @@ window.addEventListener("DOMContentLoaded", () => {
         return parseInt(getTotalFormsElement(formset).value, 10)
     }
 
+    function getFormsetPrefix(formset) {
+        return formset.dataset.prefix
+    }
+
+    function getFormPrefix(form) {
+        return getFormsetPrefix(form.parentNode)
+    }
+
+    function updatePrefixes(form, index) {
+        prefix = getFormPrefix(form)
+        regex = new RegExp(`(${prefix}-(\\d+|__prefix__))`)
+        form.querySelectorAll("*").forEach((elem) => {
+            for (attr of ["id", "name", "for"]) {
+                if (elem.hasAttribute(attr)) {
+                    elem.setAttribute(attr, elem.getAttribute(attr).replace(regex, `${prefix}-${index}`))
+                }
+            } 
+        })
+    }
+
     function deleteHandler(btn) {
         btn.addEventListener("click", (e) => {
             e.preventDefault()
@@ -27,7 +47,11 @@ window.addEventListener("DOMContentLoaded", () => {
             if (form.classList.contains("extra-form") && isEmpty(form)) {
                 form.remove()
                 updateTotalCount(formset, getTotalCount(formset) - 1)
-                // TODO: update prefixes
+                index = 0
+                formset.querySelectorAll(":scope > .form-container").forEach((f) => {
+                    if (f.classList.contains("extra-form")) updatePrefixes(f, index)
+                    index = index + 1
+                })
             }
             else {
                 form.classList.toggle("marked-for-removal")
@@ -39,6 +63,7 @@ window.addEventListener("DOMContentLoaded", () => {
             }
         })
     }
+
     function addHandler(btn) {
         btn.addEventListener("click", (e) => {
             e.preventDefault()
@@ -53,15 +78,7 @@ window.addEventListener("DOMContentLoaded", () => {
             // Update management form
             count = getTotalCount(formset) + 1
             updateTotalCount(formset, count)
-
-            // Update 'id', 'name' and 'for' attributes
-            newForm.querySelectorAll("*").forEach((elem) => {
-                for (attr of ["id", "name", "for"]) {
-                    if (elem.hasAttribute(attr)) {
-                        elem.setAttribute(attr, elem.getAttribute(attr).replace("__prefix__", count))
-                    }
-                } 
-            })
+            updatePrefixes(newForm, count - 1)
         })
     }
 
