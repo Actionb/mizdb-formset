@@ -21,7 +21,7 @@ class ContactView(UpdateView):
             PhoneNumber,
             fields=["label", "number"],
             formset=MIZInlineFormset,
-            extra=1,
+            extra=2,
         )
 
     def get_formset(self, **kwargs):

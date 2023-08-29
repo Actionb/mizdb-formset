@@ -22,7 +22,7 @@ def add_button(add_row):
 @pytest.fixture
 def new_form(forms, add_button):
     add_button.click()
-    return forms.last
+    return list(forms.all())[-1]
 
 
 def test_adds_new_empty_form(add_button, forms):
@@ -60,14 +60,14 @@ def test_add_updates_total_forms(management_total, add_button):
 def test_new_form_ids_set(new_form, management_total):
     """Assert that the ids of the newly added elements are set."""
     count = int(management_total.get_attribute("value"))
-    for element in new_form.locator("input").all():
+    for element in new_form.locator("input").all():  # TODO: need to check for select,textarea as well
         expect(element).to_have_id(re.compile(rf"^id_{FORMSET_PREFIX}-{count}"))
 
 
 def test_new_form_names_set(new_form, management_total):
     """Assert that the names of the newly added elements are set."""
     count = int(management_total.get_attribute("value"))
-    for element in new_form.locator("input").all():
+    for element in new_form.locator("input").all():  # TODO: need to check for select,textarea as well
         expect(element).to_have_attribute("name", re.compile(rf"^{FORMSET_PREFIX}-{count}"))
 
 
@@ -82,4 +82,4 @@ def test_new_form_delete_button(new_form):
     """Assert that the delete button works as expected."""
     btn = get_delete_button(new_form)
     btn.click()
-    expect(new_form).to_have_class(re.compile("marked-for-removal"))
+    expect(new_form).not_to_be_visible()

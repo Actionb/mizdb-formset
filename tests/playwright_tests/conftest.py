@@ -43,3 +43,9 @@ def home_number_form(forms):
 def management_total(formset):
     """Return the TOTAL_FORMS element of the management form."""
     return formset.locator("[id$=TOTAL_FORMS]")
+
+
+@pytest.fixture
+def extra_forms(formset):
+    """Return all the extra forms."""
+    return formset.locator("> .extra-form")
