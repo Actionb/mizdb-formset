@@ -34,8 +34,8 @@ def forms(formset):
 
 
 @pytest.fixture
-def home_number_form(forms):
-    """Return the form with the 'Home' number."""
+def first_form(forms):
+    """Return the first form."""
     return forms.first
 
 
