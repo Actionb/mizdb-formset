@@ -1,13 +1,11 @@
-from unittest import mock
-
 import pytest
 from bs4 import BeautifulSoup
 from django.forms import inlineformset_factory
 
 from mizdb_inlines.renderers import InlineFormRenderer, InlineFormsetRenderer
 from tests.testapp.models import Contact, PhoneNumber
+from tests.testapp.views import FORMSET_PREFIX
 
-FORMSET_PREFIX = "foo_bar"
 FORMSET_FIELDS = ["label", "number"]
 
 pytestmark = [pytest.mark.django_db]
@@ -137,77 +135,87 @@ def extra_form(formset_form_containers):
     return formset_form_containers[-2]
 
 
-@pytest.mark.parametrize("css_class", ["row", "form-container"])
-def test_form_container_css_classes(form_container, css_class):
-    """Assert that the form container has the expected CSS classes."""
-    assert css_class in form_container.attrs["class"]
+@pytest.fixture
+def delete_checkbox(delete_wrapper):
+    return delete_wrapper.find("input", type="checkbox")
 
 
-def test_fields_rendered_as_two_divs(fields_html):
-    """
-    Assert that the form renderer renders the formset forms with two divs;
-    one for the form and one for the deletion button.
-    """
-    assert len(fields_html.contents) == 2
-    assert all(e.name == "div" for e in fields_html.contents)
+@pytest.fixture
+def delete_button(delete_wrapper):
+    return delete_wrapper.button
 
 
-@pytest.mark.parametrize("field_name", FORMSET_FIELDS)
-def test_form_fields_rendered(field_container, prefixed_name, field_name):
-    """Assert that the form renderer renders the form fields."""
-    assert field_container.find_all("input", type="text", attrs={"name": prefixed_name})
+class TestDeleteFieldRenderer:
+    def test_delete_checkbox_rendered(self, delete_checkbox):
+        """Assert that the delete field checkbox is rendered."""
+        assert delete_checkbox
+
+    @pytest.mark.parametrize("css_class", ["delete-cb", "d-none"])
+    def test_delete_checkbox_css_class(self, delete_checkbox, css_class):
+        """Assert that the delete field checkbox has the expected CSS classes."""
+        assert css_class in delete_checkbox.attrs["class"]
+
+    def test_delete_button_rendered(self, delete_button):
+        """Assert that the delete button is rendered."""
+        assert delete_button
+
+    def test_delete_button_css_class(self, delete_button):
+        """Assert that the delete button has the expected CSS class."""
+        assert "delete-btn" in delete_button.attrs["class"]
 
 
-@pytest.mark.parametrize("field_name", ["DELETE"])
-def test_deletion_checkbox_rendered(fields_html, prefixed_name, field_name):
-    """Assert that the form renderer renders the deletion checkbox."""
-    assert fields_html.find_all("input", type="checkbox", attrs={"name": prefixed_name})
+class TestInlineFormRenderer:
+    def test_fields_rendered_as_two_divs(self, fields_html):
+        """
+        Assert that the form renderer renders the formset forms with two divs;
+        one for the form and one for the deletion button.
+        """
+        assert len(fields_html.contents) == 2
+        assert all(e.name == "div" for e in fields_html.contents)  # noqa
+
+    @pytest.mark.parametrize("css_class", ["row", "form-container"])
+    def test_form_container_css_classes(self, form_container, css_class):
+        """Assert that the form container has the expected CSS classes."""
+        assert css_class in form_container.attrs["class"]
+
+    @pytest.mark.parametrize("field_name", FORMSET_FIELDS)
+    def test_form_fields_rendered(self, field_container, prefixed_name, field_name):
+        """Assert that the form renderer renders the form fields."""
+        assert field_container.find_all("input", type="text", attrs={"name": prefixed_name})
+
+    @pytest.mark.parametrize("css_class", ["col", "fields-container"])
+    def test_field_container_css_classes(self, field_container, css_class):
+        """Assert that the field container div contains the expected CSS classes."""
+        assert css_class in field_container.attrs["class"]
+
+    @pytest.mark.parametrize("css_class", ["col-1", "delete-container"])
+    def test_delete_wrapper_css_class(self, delete_wrapper, css_class):
+        """Assert that the deletion wrapper div contains the expected CSS classes."""
+        assert css_class in delete_wrapper.attrs["class"]
 
 
-@pytest.mark.parametrize("css_class", ["col", "fields-container"])
-def test_field_container_css_classes(field_container, css_class):
-    """Assert that the field container div contains the expected CSS classes."""
-    assert css_class in field_container.attrs["class"]
+class TestInlineFormsetRenderer:
+    def test_formset_prefix_in_data_attrs(self, formset_container):
+        """Assert that the formset includes the prefix in its data attributes."""
+        assert FORMSET_PREFIX in formset_container.attrs["data-prefix"]
 
+    @pytest.mark.parametrize("css_class", ["formset-container", FORMSET_PREFIX])
+    def test_formset_container_css_class(self, formset_container, css_class):
+        """Assert that the formset container contains the expected CSS classes."""
+        assert css_class in formset_container.attrs["class"]
 
-@pytest.mark.parametrize("css_class", ["col-1", "delete-container"])
-def test_delete_wrapper_css_class(delete_wrapper, css_class):
-    """Assert that the deletion wrapper div contains the expected CSS classes."""
-    assert css_class in delete_wrapper.attrs["class"]
+    def test_formset_includes_add_button(self, formset_html):
+        """Assert that the formset includes an 'add another' button."""
+        assert formset_html.find_all("button", class_="add-btn")
 
+    def test_formset_includes_form_template(self, formset_html):
+        """Assert that the formset includes an empty form template."""
+        assert formset_html.find_all("div", class_="empty-form")
 
-def test_formset_renderer_uses_own_form_renderer(formset_renderer):
-    """
-    Assert that the formset renderer renders the forms with the expected form
-    renderer.
-    """
-    with mock.patch("mizdb_inlines.renderers.InlineFormRenderer.render") as render_mock:
-        render_mock.return_value = ""
-        formset_renderer.render()
-    render_mock.asser_called()
+    def test_extra_form_has_extra_class(self, extra_form):
+        """Assert that the extra forms have the expected CSS class."""
+        assert "extra-form" in extra_form.attrs["class"]
 
-
-@pytest.mark.parametrize("css_class", ["formset-container", FORMSET_PREFIX])
-def test_formset_container_css_class(formset_container, css_class):
-    """Assert that the formset container contains the expected CSS classes."""
-    assert css_class in formset_container.attrs["class"]
-
-
-def test_formset_includes_add_button(formset_html):
-    """Assert that the formset includes an 'add another' button."""
-    assert formset_html.find_all("button", class_="add-btn")
-
-
-def test_formset_includes_form_template(formset_html):
-    """Assert that the formset includes an empty form template."""
-    assert formset_html.find_all("div", class_="empty-form")
-
-
-def test_extra_form_has_extra_class(extra_form):
-    """Assert that the extra forms have the expected CSS class."""
-    assert "extra-form" in extra_form.attrs["class"]
-
-
-def test_form_template_has_extra_class(empty_form):
-    """Assert that the empty form template has the expected CSS class."""
-    assert "extra-form" in empty_form.attrs["class"]
+    def test_form_template_has_extra_class(self, empty_form):
+        """Assert that the empty form template has the expected CSS class."""
+        assert "extra-form" in empty_form.attrs["class"]
