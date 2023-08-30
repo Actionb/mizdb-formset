@@ -26,7 +26,7 @@ INSTALLED_APPS = [
 
 ## Usage
 
-Render the formset using the `inline_formset` template tag from the `mizdb_inlines` template tag library:
+Add `mizdb_inlines/js/mizdb_inlines.js` javascript and render the formset using the `inline_formset` template tag from the `mizdb_inlines` template tag library:
 
 ```html
 <!DOCTYPE html>
