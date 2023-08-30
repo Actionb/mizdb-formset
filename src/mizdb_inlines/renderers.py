@@ -139,6 +139,8 @@ class InlineFormsetRenderer(FormsetRenderer):
         </div>
     """
 
+    form_renderer = InlineFormRenderer
+
     def get_formset_container_class(self):
         """Return the CSS classes for the div that wraps the formset."""
         return f"{self.formset.prefix} formset-container mb-3"
@@ -164,19 +166,22 @@ class InlineFormsetRenderer(FormsetRenderer):
         """
         kwargs = self.get_kwargs()
         kwargs["is_extra"] = True
-        empty_form = InlineFormRenderer(self.formset.empty_form, **kwargs).render()
+        empty_form = self.render_form(self.formset.empty_form, **kwargs)
         return mark_safe(
             '<div class="add-row">'
             f'<div class="empty-form d-none">{empty_form}</div>'
             f"{self.get_add_button_html()}</div>"
         )
 
+    def render_form(self, form, **kwargs):
+        return self.form_renderer(form, **kwargs).render()
+
     def render_forms(self):
         rendered_forms = mark_safe("")
         kwargs = self.get_kwargs()
         for form in self.formset.forms:
             kwargs["is_extra"] = form in self.formset.extra_forms
-            rendered_forms += InlineFormRenderer(form, **kwargs).render()
+            rendered_forms += self.render_form(form, **kwargs)
         return rendered_forms
 
     def render(self):
