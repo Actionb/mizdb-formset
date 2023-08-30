@@ -15,6 +15,12 @@ def home_number_form_delete_button(home_number_form):
     return get_delete_button(home_number_form)
 
 
+@pytest.fixture
+def reset_button(formset_page):
+    """Return the form reset button."""
+    return formset_page.get_by_role("button", name=re.compile("reset", re.IGNORECASE))
+
+
 def test_can_delete(formset_page, home_number_form_delete_button, submit_button, home_number, contact_obj):
     """
     Assert that clicking on the 'delete' button and submitting the form deletes
@@ -30,6 +36,25 @@ def test_form_marked_for_removal(home_number_form_delete_button, home_number_for
     """Assert that clicking the 'delete' button marks the form for removal."""
     home_number_form_delete_button.click()
     expect(home_number_form).to_have_class(re.compile(r"marked-for-removal"))
+
+
+def test_form_disabled(forms):
+    """Assert that clicking the 'delete' button disables the form controls."""
+    form = forms.first
+    btn = get_delete_button(form)
+    btn.click()
+    for elem in form.locator(".form-control").all():
+        expect(elem).to_be_disabled()
+
+
+def test_form_enabled(forms):
+    """Assert that clicking the 'delete' button again enables the form controls."""
+    form = forms.first
+    btn = get_delete_button(form)
+    btn.click()
+    btn.click()
+    for elem in form.locator(".form-control").all():
+        expect(elem).to_be_enabled()
 
 
 def test_empty_extra_forms_removed_from_dom(extra_forms):
@@ -97,3 +122,23 @@ def test_label_prefix_indices_updated_when_form_removed(extra_forms, management_
     for form in extra_forms.all():
         for element in form.locator("label").all():
             expect(element).to_have_attribute("for", re.compile(rf"^id_{FORMSET_PREFIX}-{index}"))
+
+
+def test_reset_unmarks_form_for_removal(forms, reset_button):
+    """Assert that clicking the reset button un-marks all forms."""
+    form = forms.first
+    btn = get_delete_button(form)
+    btn.click()
+    expect(form).to_have_class(re.compile(r"marked-for-removal"))
+    reset_button.click()
+    expect(form).not_to_have_class(re.compile(r"marked-for-removal"))
+
+
+def test_reset_enables_forms(forms, reset_button):
+    """Assert that clicking the reset button enables forms that were disabled."""
+    form = forms.first
+    btn = get_delete_button(form)
+    btn.click()
+    reset_button.click()
+    for elem in form.locator(".form-controls").all():
+        expect(elem).to_be_enabled()

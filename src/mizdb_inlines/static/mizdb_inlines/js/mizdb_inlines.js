@@ -43,11 +43,22 @@ window.addEventListener("DOMContentLoaded", () => {
         })
     }
 
+    function disableElem(elem){
+        elem.disabled = true
+        elem.classList.add("disabled-for-removal")
+    }
+
+    function enableElem(elem){
+        elem.disabled = false
+        elem.classList.remove("disabled-for-removal")
+    }
+
     /* Handle clicking on the delete button of a form. 
 
     If the form is an extra formm without data, remove the form from the DOM.
     If the form is not empty, or if it is not an extra form, check the (hidden) 
-    DELETE checkbox, disable the form and mark it for removal. 
+    DELETE checkbox, disable the form and mark it for removal. Pressing the
+    delete button again, undoes those changes.
     */
     function deleteHandler(btn) {
         btn.addEventListener("click", (e) => {
@@ -66,11 +77,22 @@ window.addEventListener("DOMContentLoaded", () => {
                 })
             }
             else {
+                const removing = !form.classList.contains("marked-for-removal")
                 form.classList.toggle("marked-for-removal")
                 const checkbox = form.querySelector(".delete-cb")
                 checkbox.checked = !checkbox.checked
                 form.querySelectorAll(".form-control").forEach((elem) => {
-                    elem.disabled = !elem.disabled
+                    if (removing && !elem.disabled) {
+                        // Currently marking the form for removal, and the elem 
+                        // was not already disabled (do not mess with already 
+                        // disabled controls).
+                        disableElem(elem)
+                    }
+                    else if (!removing && elem.classList.contains("disabled-for-removal")) {
+                        // Currently un-marking the form, and the elem was 
+                        // previously disabled for removal.
+                        enableElem(elem)
+                    }
                 })
             }
         })
@@ -97,4 +119,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".delete-btn").forEach((btn) => deleteHandler(btn))
     document.querySelectorAll(".add-btn").forEach((btn) => addHandler(btn))
+    window.addEventListener("reset", (e) => {
+        document.querySelectorAll(".marked-for-removal").forEach((form) => form.classList.remove("marked-for-removal"))
+        document.querySelectorAll(".disabled-for-removal").forEach((elem) => enableElem(elem))
+    })
 })
