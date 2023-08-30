@@ -20,9 +20,9 @@ class ContactView(UpdateView):
     def get_formset(self, **kwargs):
         return self.get_formset_class()(instance=self.object, prefix=FORMSET_PREFIX, **kwargs)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, formset=None, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["formset"] = self.get_formset()
+        ctx["formset"] = formset or self.get_formset()
         ctx["header"] = "Contact Form"
         return ctx
 
@@ -30,4 +30,11 @@ class ContactView(UpdateView):
         formset = self.get_formset(data=self.request.POST)
         if formset.is_valid():
             formset.save()
-        return super().form_valid(form)
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        formset = self.get_formset(data=self.request.POST)
+        formset.full_clean()
+        return self.render_to_response(self.get_context_data(form=form, formset=formset))
