@@ -1,7 +1,6 @@
 from django.forms import inlineformset_factory
 from django.views.generic import UpdateView
 
-from mizdb_inlines.forms import MIZInlineFormset
 from tests.testapp.models import Contact, PhoneNumber
 
 FORMSET_PREFIX = "foo_bar"
@@ -16,13 +15,7 @@ class ContactView(UpdateView):
         return self.request.path
 
     def get_formset_class(self):
-        return inlineformset_factory(
-            Contact,
-            PhoneNumber,
-            fields=["label", "number"],
-            formset=MIZInlineFormset,
-            extra=2,
-        )
+        return inlineformset_factory(Contact, PhoneNumber, fields=["label", "number"], extra=2)
 
     def get_formset(self, **kwargs):
         return self.get_formset_class()(instance=self.object, prefix=FORMSET_PREFIX, **kwargs)
