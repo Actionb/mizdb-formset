@@ -124,4 +124,14 @@ window.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".marked-for-removal").forEach((form) => form.classList.remove("marked-for-removal"))
         document.querySelectorAll(".disabled-for-removal").forEach((elem) => enableElem(elem))
     })
+    const deleteStyle = document.createElement("style")
+    // Insert at the very top, so the style can be overwritten.
+    document.head.insertBefore(deleteStyle, document.head.firstChild)
+    deleteStyle.sheet.insertRule(`.marked-for-removal {
+        color: gray;
+        background-color: lightgray;
+        background-image: repeating-linear-gradient(-45deg, transparent, transparent 4px, rgba(255, 255, 255, 0.5) 4px, rgba(255, 255, 255, 0.5) 8px);
+        background-size: contain;
+        cursor: not-allowed;
+    }`)
 })
