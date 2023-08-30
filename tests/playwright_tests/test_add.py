@@ -60,14 +60,14 @@ def test_add_updates_total_forms(management_total, add_button):
 def test_new_form_ids_set(new_form, management_total):
     """Assert that the ids of the newly added form controls are set."""
     index = int(management_total.get_attribute("value")) - 1
-    for element in new_form.locator("input").all():  # TODO: need to check for select,textarea as well
+    for element in new_form.locator("input,select,textarea").all():
         expect(element).to_have_id(re.compile(rf"^id_{FORMSET_PREFIX}-{index}"))
 
 
 def test_new_form_names_set(new_form, management_total):
     """Assert that the names of the newly added form controls are set."""
     index = int(management_total.get_attribute("value")) - 1
-    for element in new_form.locator("input").all():  # TODO: need to check for select,textarea as well
+    for element in new_form.locator("input,select,textarea").all():
         expect(element).to_have_attribute("name", re.compile(rf"^{FORMSET_PREFIX}-{index}"))
 
 

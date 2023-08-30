@@ -14,7 +14,7 @@ pytestmark = [pytest.mark.django_db]
 
 
 def get_formset_class(**kwargs):
-    defaults = {"fields": FORMSET_FIELDS, "can_delete": True, "extra": 1}
+    defaults = {"fields": FORMSET_FIELDS, "extra": 1}
     return inlineformset_factory(Contact, PhoneNumber, **{**defaults, **kwargs})
 
 
