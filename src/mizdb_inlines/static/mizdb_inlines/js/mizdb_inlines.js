@@ -103,15 +103,16 @@ window.addEventListener("DOMContentLoaded", () => {
         btn.addEventListener("click", (e) => {
             e.preventDefault()
 
-            addRow = btn.parentNode
-            formset = addRow.parentNode
+            const addRow = btn.parentNode
+            const formset = addRow.parentNode
 
-            newForm = addRow.querySelector(".empty-form > div").cloneNode(true)
+            const newForm = addRow.querySelector(".empty-form > div").cloneNode(true)
             formset.insertBefore(newForm, addRow)
-            deleteHandler(newForm.querySelector(".delete-btn"))
+            const deleteButton = newForm.querySelector(".delete-btn")
+            if (deleteButton) deleteHandler(deleteButton)
 
             // Update management form and set the prefixes of the new form.
-            count = getTotalCount(formset) + 1
+            const count = getTotalCount(formset) + 1
             updateTotalCount(formset, count)
             updatePrefixes(newForm, count - 1)
         })
