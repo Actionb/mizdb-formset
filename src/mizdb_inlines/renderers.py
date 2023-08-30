@@ -18,7 +18,50 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext
 from django_bootstrap5.core import get_field_renderer
-from django_bootstrap5.renderers import FormRenderer, FormsetRenderer
+from django_bootstrap5.css import merge_css_classes
+from django_bootstrap5.renderers import FormRenderer, FormsetRenderer, FieldRenderer
+
+
+class DeleteFieldRenderer(FieldRenderer):
+    checkbox_classes = ("delete-cb", "d-none")
+
+    def __init__(self, field, **kwargs):
+        super().__init__(field, **kwargs)
+        self.field_class = merge_css_classes(self.field_class, *self.checkbox_classes)
+
+    def add_widget_class_attrs(self, widget=None):
+        # Add self.field_class to the widget classes.
+        # https://github.com/zostera/django-bootstrap5/issues/287
+        if widget is None:  # pragma: no cover
+            widget = self.widget
+        super().add_widget_class_attrs(widget)
+        classes = widget.attrs.get("class", "")
+        if self.field_class:
+            classes += f" {self.field_class}"
+        widget.attrs["class"] = classes
+
+    def get_button_class(self):
+        """Return the CSS classes for the delete button."""
+        return "btn w-100 btn-outline-secondary btn-sm delete-btn"
+
+    def get_button_title(self):
+        """Return the title attribute for the delete button."""
+        return gettext("Delete")
+
+    def get_button_content(self):
+        """Return the content for the delete button."""
+        return """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-delete"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>"""  # noqa
+
+    def get_button_html(self):
+        """Render the HTML for the delete button."""
+        return (
+            f'<button type="button" class="{self.get_button_class()}" '
+            f'title="{self.get_button_title()}">{self.get_button_content()}</button>'
+        )
+
+    def render(self):
+        """Render the delete checkbox and the delete button."""
+        return mark_safe(self.get_field_html() + self.get_button_html())
 
 
 class DeletableFormRenderer(FormRenderer):
@@ -26,8 +69,11 @@ class DeletableFormRenderer(FormRenderer):
     Renderer for the forms of a formset that can be deleted.
 
     The form will be rendered with two columns; a wider column for all the
-    fields and a narrower (col-1) column for the delete button.
+    fields and a narrower (col-1) column for the delete field with a delete
+    button.
     """
+
+    delete_field_renderer = DeleteFieldRenderer
 
     def __init__(self, form, is_extra=False, **kwargs):
         super().__init__(form, **kwargs)
@@ -58,17 +104,16 @@ class DeletableFormRenderer(FormRenderer):
             form=super().render(),
         )
 
+    def render_delete_field(self, field, **kwargs):
+        return self.delete_field_renderer(field, **kwargs).render()
+
     def render_fields(self):
         rendered_fields = rendered_delete = mark_safe("")
         kwargs = self.get_kwargs()
         renderer = get_field_renderer(**kwargs)
         for field in self.form:
             if field.name == DELETION_FIELD_NAME:
-                # Render the widget without the label and without the wrapper:
-                # TODO: implement a renderer for the deletion field, which adds
-                #  the delete button (etc.). That way, FormsetDeletionWidget
-                #  and the formset override in MIZInlineFormset could be omitted.
-                rendered_delete = renderer(field, **kwargs).get_field_html()
+                rendered_delete = self.render_delete_field(field, **kwargs)
             else:
                 rendered_fields += renderer(field, **kwargs).render()
         return format_html(
