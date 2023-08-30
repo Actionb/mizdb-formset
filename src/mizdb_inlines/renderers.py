@@ -1,28 +1,20 @@
-"""Form and Formset renderers.
-
-Formsets rendered with MIZFormsetRenderer  will have the following structure:
-    <div class="formset-container">
-        <div class="form-container row">
-            <div class="fields-container col">FORM FIELDS</div>
-            <div class="delete-container col-1">DELETE INPUTS</div>
-        </div>
-        ...
-        <div class="add-row">
-            <div class="empty-form">EMPTY FORM</div>
-            <button class="add-btn"></button>
-        </div>
-    </div>
-"""
 from django.forms.formsets import DELETION_FIELD_NAME
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext
 from django_bootstrap5.core import get_field_renderer
 from django_bootstrap5.css import merge_css_classes
-from django_bootstrap5.renderers import FormRenderer, FormsetRenderer, FieldRenderer
+from django_bootstrap5.renderers import FieldRenderer, FormRenderer, FormsetRenderer
 
 
 class DeleteFieldRenderer(FieldRenderer):
+    """
+    A field renderer for the delete portion of an inline form.
+
+    The default delete checkbox input will be hidden (display: none) and a
+    button will be presented instead.
+    """
+
     checkbox_classes = ("delete-cb", "d-none")
 
     def __init__(self, field, **kwargs):
@@ -64,9 +56,9 @@ class DeleteFieldRenderer(FieldRenderer):
         return mark_safe(self.get_field_html() + self.get_button_html())
 
 
-class DeletableFormRenderer(FormRenderer):
+class InlineFormRenderer(FormRenderer):
     """
-    Renderer for the forms of a formset that can be deleted.
+    Renderer for the forms of an inline formset.
 
     The form will be rendered with two columns; a wider column for all the
     fields and a narrower (col-1) column for the delete field with a delete
@@ -125,7 +117,28 @@ class DeletableFormRenderer(FormRenderer):
         )
 
 
-class MIZFormsetRenderer(FormsetRenderer):
+class InlineFormsetRenderer(FormsetRenderer):
+    """
+    Renderer for inline formsets.
+
+    The formset will be renderer with a button that allows adding more inline
+    forms. The forms will be renderer in two columns, one for the form fields
+    and one for a delete button.
+
+    A rendered formset will have the following structure:
+        <div class="formset-container">
+            <div class="form-container row">
+                <div class="fields-container col">FORM FIELDS</div>
+                <div class="delete-container col-1">DELETE BUTTON</div>
+            </div>
+            ...
+            <div class="add-row">
+                <div class="empty-form">EMPTY FORM TEMPLATE</div>
+                <button class="add-btn">ADD BUTTON</button>
+            </div>
+        </div>
+    """
+
     def get_formset_container_class(self):
         """Return the CSS classes for the div that wraps the formset."""
         return f"{self.formset.prefix} formset-container mb-3"
@@ -151,7 +164,7 @@ class MIZFormsetRenderer(FormsetRenderer):
         """
         kwargs = self.get_kwargs()
         kwargs["is_extra"] = True
-        empty_form = DeletableFormRenderer(self.formset.empty_form, **kwargs).render()
+        empty_form = InlineFormRenderer(self.formset.empty_form, **kwargs).render()
         return mark_safe(
             '<div class="add-row">'
             f'<div class="empty-form d-none">{empty_form}</div>'
@@ -163,7 +176,7 @@ class MIZFormsetRenderer(FormsetRenderer):
         kwargs = self.get_kwargs()
         for form in self.formset.forms:
             kwargs["is_extra"] = form in self.formset.extra_forms
-            rendered_forms += DeletableFormRenderer(form, **kwargs).render()
+            rendered_forms += InlineFormRenderer(form, **kwargs).render()
         return rendered_forms
 
     def render(self):

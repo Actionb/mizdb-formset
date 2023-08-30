@@ -4,7 +4,7 @@ import pytest
 from bs4 import BeautifulSoup
 from django.forms import inlineformset_factory
 
-from mizdb_inlines.renderers import DeletableFormRenderer, MIZFormsetRenderer
+from mizdb_inlines.renderers import InlineFormRenderer, InlineFormsetRenderer
 from tests.testapp.models import Contact, PhoneNumber
 
 FORMSET_PREFIX = "foo_bar"
@@ -20,12 +20,12 @@ def get_formset_class(**kwargs):
 
 def get_formset_renderer(formset):
     """Return a FormRenderer instance for the given formset."""
-    return MIZFormsetRenderer(formset)
+    return InlineFormsetRenderer(formset)
 
 
 def get_form_renderer(form):
-    """Return a DeletableFormRenderer instance for the given form."""
-    return DeletableFormRenderer(form)
+    """Return a InlineFormRenderer instance for the given form."""
+    return InlineFormRenderer(form)
 
 
 @pytest.fixture
@@ -73,7 +73,7 @@ def form(formset):
 
 @pytest.fixture
 def form_renderer(form):
-    """Return a DeletableFormRenderer instance for the default test form."""
+    """Return a InlineFormRenderer instance for the default test form."""
     return get_form_renderer(form)
 
 
@@ -181,7 +181,7 @@ def test_formset_renderer_uses_own_form_renderer(formset_renderer):
     Assert that the formset renderer renders the forms with the expected form
     renderer.
     """
-    with mock.patch("mizdb_inlines.renderers.DeletableFormRenderer.render") as render_mock:
+    with mock.patch("mizdb_inlines.renderers.InlineFormRenderer.render") as render_mock:
         render_mock.return_value = ""
         formset_renderer.render()
     render_mock.asser_called()
