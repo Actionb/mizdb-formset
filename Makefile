@@ -1,6 +1,6 @@
 .PHONY: test
 test:
-	pytest --cov --cov-config=./tests/.coveragerc --cov-report=term-missing tests
+	pytest --cov --cov-config=./tests/.coveragerc --cov-report=term-missing -n auto tests
 
 .PHONY: reformat
 reformat:

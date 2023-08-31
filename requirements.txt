@@ -7,5 +7,6 @@ pytest
 pytest-django
 pytest-cov
 pytest-playwright
+pytest-xdist
 playwright
 beautifulsoup4
