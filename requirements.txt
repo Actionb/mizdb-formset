@@ -10,3 +10,5 @@ pytest-playwright
 pytest-xdist
 playwright
 beautifulsoup4
+twine
+build
