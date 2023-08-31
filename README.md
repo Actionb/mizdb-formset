@@ -54,6 +54,33 @@ Add `mizdb_inlines/js/mizdb_inlines.js` javascript and render the formset using 
 </html>
 ```
 
+### View mixin for inline formsets
+
+Use the `InlineFormsetMixin` view mixin to remove some of the boilerplate from handling inline formsets. 
+Simply declare the formset classes to use in the `formset_classes` attribute.
+
+```python
+from mizdb_inlines.views import InlineFormsetMixin
+
+
+class MyView(InlineFormsetMixin, UpdateView):
+    model = Pizza
+    fields = "__all__"
+    template_name = "pizza.html"
+    success_url = "/"
+
+    formset_classes = (
+        inlineformset_factory(Pizza, Toppings, fields="__all__", extra=1),
+        MyAwesomeFormset,
+    )
+```
+
+This will add formset instances to the template context under the name `formsets`:
+```html
+{% for formset in formsets %}
+    {% inline_formset formset %}
+{% endfor %}
+```
 ## Development & Demo
 
 ```bash

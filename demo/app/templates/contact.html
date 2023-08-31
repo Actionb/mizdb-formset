@@ -13,12 +13,14 @@
 <body class="container">
 <h2>{{ header }}</h2>
 <form method="post">
-{% csrf_token %}
+    {% csrf_token %}
 
-{% bootstrap_form form %}
-{% inline_formset formset layout="horizontal" %}
-{% bootstrap_button button_type="submit" button_class="btn-success" content="Save" %}
-{% bootstrap_button button_type="reset" button_class="btn-warning" content="Reset" %}
+    {% bootstrap_form form %}
+    {% for formset in formsets %}
+    {% inline_formset formset layout="horizontal" %}
+    {% endfor %}
+    {% bootstrap_button button_type="submit" button_class="btn-success" content="Save" %}
+    {% bootstrap_button button_type="reset" button_class="btn-warning" content="Reset" %}
 </form>
 </body>
 </html>
