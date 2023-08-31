@@ -9,7 +9,7 @@ from django_bootstrap5.renderers import FieldRenderer, FormRenderer, FormsetRend
 
 class DeleteFieldRenderer(FieldRenderer):
     """
-    A field renderer for the delete portion of an inline form.
+    A field renderer for the delete field of an inline form.
 
     The default delete checkbox input will be hidden (display: none) and a
     button will be presented instead.
@@ -121,8 +121,8 @@ class InlineFormsetRenderer(FormsetRenderer):
     """
     Renderer for inline formsets.
 
-    The formset will be renderer with a button that allows adding more inline
-    forms. The forms will be renderer in two columns, one for the form fields
+    The formset will be rendered with a button that allows adding more inline
+    forms. The forms will be rendered in two columns, one for the form fields
     and one for a delete button.
 
     A rendered formset will have the following structure:

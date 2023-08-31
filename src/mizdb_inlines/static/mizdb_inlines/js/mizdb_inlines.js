@@ -29,7 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
         return getFormsetPrefix(form.parentNode)
     }
 
-    // Update the prefix indeces of the fields belonging to the given form.
+    // Update the prefix indices of the fields belonging to the given form.
     function updatePrefixes(form, index) {
         const prefix = getFormPrefix(form)
         // __prefix__ is the default prefix of empty forms
@@ -55,10 +55,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
     /* Handle clicking on the delete button of a form. 
 
-    If the form is an extra formm without data, remove the form from the DOM.
+    If the form is an extra form without data, remove it from the DOM.
     If the form is not empty, or if it is not an extra form, check the (hidden) 
     DELETE checkbox, disable the form and mark it for removal. Pressing the
-    delete button again, undoes those changes.
+    delete button again undoes the changes.
     */
     function deleteHandler(btn) {
         btn.addEventListener("click", (e) => {
@@ -125,7 +125,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".disabled-for-removal").forEach((elem) => enableElem(elem))
     })
     const deleteStyle = document.createElement("style")
-    // Insert at the very top, so the style can be overwritten.
+    // Insert at the very top so that the style can be overwritten.
     document.head.insertBefore(deleteStyle, document.head.firstChild)
     deleteStyle.sheet.insertRule(`.marked-for-removal {
         color: gray;
