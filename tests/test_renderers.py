@@ -125,8 +125,8 @@ def field_container(fields_html):
 
 
 @pytest.fixture
-def delete_wrapper(fields_html):
-    """Return the wrapper for the delete button."""
+def delete_container(fields_html):
+    """Return the container for the delete button."""
     return list(fields_html.children)[-1]
 
 
@@ -143,13 +143,15 @@ def extra_form(formset_form_containers):
 
 
 @pytest.fixture
-def delete_checkbox(delete_wrapper):
-    return delete_wrapper.find("input", type="checkbox")
+def delete_checkbox(delete_container):
+    """Return the delete checkbox input element of the given delete container."""
+    return delete_container.find("input", type="checkbox")
 
 
 @pytest.fixture
-def delete_button(delete_wrapper):
-    return delete_wrapper.button
+def delete_button(delete_container):
+    """Return the delete button of the given delete container."""
+    return delete_container.button
 
 
 @pytest.fixture
@@ -202,9 +204,9 @@ class TestInlineFormRenderer:
         assert css_class in field_container.attrs["class"]
 
     @pytest.mark.parametrize("css_class", ["col-1", "delete-container"])
-    def test_delete_wrapper_css_class(self, delete_wrapper, css_class):
+    def test_delete_wrapper_css_class(self, delete_container, css_class):
         """Assert that the deletion wrapper div contains the expected CSS classes."""
-        assert css_class in delete_wrapper.attrs["class"]
+        assert css_class in delete_container.attrs["class"]
 
 
 class TestInlineFormsetRenderer:
