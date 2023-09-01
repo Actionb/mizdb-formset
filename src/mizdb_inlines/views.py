@@ -30,7 +30,8 @@ class InlineFormsetMixin(ModelFormMixin):
     def get_context_data(self, formsets=None, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["formsets"] = formsets or self.get_formsets(parent_instance=ctx["form"].instance)
-        ctx["formset_media"] = reduce(operator.add, (fs.media for fs in ctx["formsets"]))
+        if ctx["formsets"]:
+            ctx["formset_media"] = reduce(operator.add, (fs.media for fs in ctx["formsets"]))
         return ctx
 
     def formsets_valid(self, formsets):
