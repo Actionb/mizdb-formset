@@ -16,9 +16,9 @@ def get_formset_class(**kwargs):
     return inlineformset_factory(Contact, PhoneNumber, **{**defaults, **kwargs})
 
 
-def get_formset_renderer(formset):
+def get_formset_renderer(formset, **kwargs):
     """Return a FormRenderer instance for the given formset."""
-    return InlineFormsetRenderer(formset)
+    return InlineFormsetRenderer(formset, **kwargs)
 
 
 def get_form_renderer(form):
@@ -33,9 +33,16 @@ def formset(contact_obj):
 
 
 @pytest.fixture
-def formset_renderer(formset):
+def formset_renderer_kwargs():
+    # Default keyword arguments for the formset renderer.
+    # Override using test method parametrization.
+    return {}
+
+
+@pytest.fixture
+def formset_renderer(formset, formset_renderer_kwargs):
     """Return a FormRenderer instance for the default test formset."""
-    return get_formset_renderer(formset)
+    return get_formset_renderer(formset, **formset_renderer_kwargs)
 
 
 @pytest.fixture
@@ -145,6 +152,12 @@ def delete_button(delete_wrapper):
     return delete_wrapper.button
 
 
+@pytest.fixture
+def add_button(formset_html):
+    """Return the add button of the formset."""
+    return formset_html.find("button", class_="add-btn")
+
+
 class TestDeleteFieldRenderer:
     def test_delete_checkbox_rendered(self, delete_checkbox):
         """Assert that the delete field checkbox is rendered."""
@@ -204,9 +217,14 @@ class TestInlineFormsetRenderer:
         """Assert that the formset container contains the expected CSS classes."""
         assert css_class in formset_container.attrs["class"]
 
-    def test_formset_includes_add_button(self, formset_html):
+    def test_formset_includes_add_button(self, add_button):
         """Assert that the formset includes an 'add another' button."""
-        assert formset_html.find_all("button", class_="add-btn")
+        assert add_button
+
+    @pytest.mark.parametrize("formset_renderer_kwargs", [{"add_text": "Hello World"}])
+    def test_can_overwrite_add_button_text(self, add_button, formset_renderer_kwargs):
+        """Assert that the text for the add button can be overwritten."""
+        assert add_button.text == "Hello World"
 
     def test_formset_includes_form_template(self, formset_html):
         """Assert that the formset includes an empty form template."""

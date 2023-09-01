@@ -137,9 +137,15 @@ class InlineFormsetRenderer(FormsetRenderer):
                 <button class="add-btn">ADD BUTTON</button>
             </div>
         </div>
+
+    Use the `add_text` keyword argument to modify the text for the add button.
     """
 
     form_renderer = InlineFormRenderer
+
+    def __init__(self, formset, add_text="", **kwargs):
+        super().__init__(formset, **kwargs)
+        self.add_text = add_text
 
     def get_formset_container_class(self):
         """Return the CSS classes for the div that wraps the formset."""
@@ -149,11 +155,16 @@ class InlineFormsetRenderer(FormsetRenderer):
         """Return the CSS classes for the add button."""
         return "btn btn-outline-success add-btn"
 
+    def get_add_button_text(self):
+        """Return the text for the add button label."""
+        if self.add_text:
+            return self.add_text
+        return gettext("Add another %(verbose_name)s") % {"verbose_name": self.formset.model._meta.verbose_name}
+
     def get_add_button_label(self):
         """Return the label for the add button."""
         img = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>"""  # noqa
-        label = gettext("Add another %(verbose_name)s") % {"verbose_name": self.formset.model._meta.verbose_name}
-        return img + f'<span class="align-middle">{label}</span'
+        return img + f'<span class="align-middle">{self.get_add_button_text()}</span'
 
     def get_add_button_html(self):
         """Return the HTML for the button that adds another form to the formset."""
