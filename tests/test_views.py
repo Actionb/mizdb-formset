@@ -9,10 +9,19 @@ from mizdb_inlines.views import InlineFormsetMixin
 from tests.testapp.models import Contact, PhoneNumber
 
 
+class NumberForm(forms.ModelForm):
+    class Meta:
+        model = PhoneNumber
+        fields = forms.ALL_FIELDS
+
+    class Media:
+        js = ["should/be/included"]
+
+
 class BaseViewMixin(InlineFormsetMixin):
     model = Contact
     fields = forms.ALL_FIELDS
-    formset_classes = (forms.inlineformset_factory(Contact, PhoneNumber, fields=forms.ALL_FIELDS, extra=1),)
+    formset_classes = (forms.inlineformset_factory(Contact, PhoneNumber, form=NumberForm, extra=1),)
     success_url = "/"
 
 
@@ -128,6 +137,13 @@ def view(view_class, post_request, view_object):
     return view
 
 
+@pytest.fixture
+def template_context(view, view_object):
+    """Return the template context data."""
+    view.object = view_object
+    return view.get_context_data()
+
+
 @pytest.mark.django_db
 @pytest.mark.parametrize("view_class", [FormsetUpdateView, FormsetCreateView])
 class TestInlineFormsetMixin:
@@ -160,10 +176,14 @@ class TestInlineFormsetMixin:
             view.post(view.request)
             full_clean_mock.assert_called()
 
-    def test_formsets_added_to_context(self, view):
+    def test_formsets_added_to_context(self, template_context):
         """Assert that the formsets are added to the template context."""
-        view.object = None
-        assert "formsets" in view.get_context_data()
+        assert "formsets" in template_context
+
+    def test_formset_media_added_to_context(self, template_context):
+        """Assert that the formset media is added to the template context."""
+        assert "formset_media" in template_context
+        assert "should/be/included" in template_context["formset_media"]._js
 
     @pytest.mark.parametrize("form_valid, formset_valid", [(True, True)])
     def test_formset_saved(self, view, form_valid, formset_valid):

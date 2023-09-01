@@ -75,12 +75,16 @@ class MyView(InlineFormsetMixin, UpdateView):
     )
 ```
 
-This will add formset instances to the template context under the name `formsets`:
+This will add formset instances to the template context with the context variable `formsets`. 
+The combined media of the formsets is available with the variable `formset_media` :
 ```html
+{{ formset_media }}
+
 {% for formset in formsets %}
     {% inline_formset formset %}
 {% endfor %}
 ```
+
 ## Development & Demo
 
 ```bash
