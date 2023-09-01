@@ -1,6 +1,6 @@
 # Changelog
 
-## [unreleased]
+## 0.2.0 (2023-09-01)
 
 ### added
 - the combined media of all formsets is now available to the template context under the name `formset_media` 
