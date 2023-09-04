@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 (2023-09-04)
+
+### Fixed
+
+- exception from collecting media with an empty formset list 
+
 ## 0.2.0 (2023-09-01)
 
 ### added
