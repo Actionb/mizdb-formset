@@ -7,7 +7,7 @@ from tests.testapp.views import FORMSET_PREFIX
 
 
 def get_delete_button(form):
-    return form.locator(".delete-btn")
+    return form.locator(".inline-delete-btn")
 
 
 @pytest.fixture

@@ -108,7 +108,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
             const newForm = addRow.querySelector(".empty-form > div").cloneNode(true)
             formset.insertBefore(newForm, addRow)
-            const deleteButton = newForm.querySelector(".delete-btn")
+            const deleteButton = newForm.querySelector(".inline-delete-btn")
             if (deleteButton) deleteHandler(deleteButton)
 
             // Update management form and set the prefixes of the new form.
@@ -118,8 +118,8 @@ window.addEventListener("DOMContentLoaded", () => {
         })
     }
 
-    document.querySelectorAll(".delete-btn").forEach((btn) => deleteHandler(btn))
-    document.querySelectorAll(".add-btn").forEach((btn) => addHandler(btn))
+    document.querySelectorAll(".inline-delete-btn").forEach((btn) => deleteHandler(btn))
+    document.querySelectorAll(".inline-add-btn").forEach((btn) => addHandler(btn))
     window.addEventListener("reset", (e) => {
         document.querySelectorAll(".marked-for-removal").forEach((form) => form.classList.remove("marked-for-removal"))
         document.querySelectorAll(".disabled-for-removal").forEach((elem) => enableElem(elem))

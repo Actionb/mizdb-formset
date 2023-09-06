@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2 (2023-09-06)
+
+### Changed
+
+- Changed CSS class for the 'add' button to `inline-add-btn` to make it more specific
+- Changed CSS class for the 'delete' button to `inline-delete-btn`
+
 ## 0.2.1 (2023-09-04)
 
 ### Fixed

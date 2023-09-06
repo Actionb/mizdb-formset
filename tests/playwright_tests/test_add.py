@@ -16,7 +16,7 @@ def add_row(formset):
 @pytest.fixture
 def add_button(add_row):
     """Return the add button for the add row."""
-    return add_row.locator(".add-btn")
+    return add_row.locator(".inline-add-btn")
 
 
 @pytest.fixture

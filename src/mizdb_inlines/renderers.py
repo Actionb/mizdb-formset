@@ -34,7 +34,7 @@ class DeleteFieldRenderer(FieldRenderer):
 
     def get_button_class(self):
         """Return the CSS classes for the delete button."""
-        return "btn w-100 btn-outline-secondary btn-sm delete-btn"
+        return "btn w-100 btn-outline-secondary btn-sm inline-delete-btn"
 
     def get_button_title(self):
         """Return the title attribute for the delete button."""
@@ -134,7 +134,7 @@ class InlineFormsetRenderer(FormsetRenderer):
             ...
             <div class="add-row">
                 <div class="empty-form">EMPTY FORM TEMPLATE</div>
-                <button class="add-btn">ADD BUTTON</button>
+                <button class="inline-add-btn">ADD BUTTON</button>
             </div>
         </div>
 
@@ -153,7 +153,7 @@ class InlineFormsetRenderer(FormsetRenderer):
 
     def get_add_button_class(self):
         """Return the CSS classes for the add button."""
-        return "btn btn-outline-success add-btn"
+        return "btn btn-outline-success inline-add-btn"
 
     def get_add_button_text(self):
         """Return the text for the add button label."""

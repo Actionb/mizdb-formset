@@ -157,7 +157,7 @@ def delete_button(delete_container):
 @pytest.fixture
 def add_button(formset_html):
     """Return the add button of the formset."""
-    return formset_html.find("button", class_="add-btn")
+    return formset_html.find("button", class_="inline-add-btn")
 
 
 class TestDeleteFieldRenderer:
@@ -176,7 +176,7 @@ class TestDeleteFieldRenderer:
 
     def test_delete_button_css_class(self, delete_button):
         """Assert that the delete button has the expected CSS class."""
-        assert "delete-btn" in delete_button.attrs["class"]
+        assert "inline-delete-btn" in delete_button.attrs["class"]
 
 
 class TestInlineFormRenderer:
