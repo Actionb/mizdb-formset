@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.3 (2023-09-07)
+
+### Changed
+
+- the combined media now includes the media of the view's model form - this is to avoid
+including resources that are shared by both formset and form multiple times
+- the combined media is now available under the name `combined_media`
+
 ## 0.2.2 (2023-09-06)
 
 ### Changed

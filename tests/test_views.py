@@ -182,8 +182,8 @@ class TestInlineFormsetMixin:
 
     def test_formset_media_added_to_context(self, template_context):
         """Assert that the formset media is added to the template context."""
-        assert "formset_media" in template_context
-        assert "should/be/included" in template_context["formset_media"]._js
+        assert "combined_media" in template_context
+        assert "should/be/included" in template_context["combined_media"]._js
 
     @pytest.mark.parametrize("form_valid, formset_valid", [(True, True)])
     def test_formset_saved(self, view, form_valid, formset_valid):

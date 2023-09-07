@@ -35,8 +35,7 @@ Add `mizdb_inlines/js/mizdb_inlines.js` javascript and render the formset using 
 <head>
     <meta charset="UTF-8">
     <title>My Awesome Form</title>
-    {{ form.media }}
-    {{ formset.media }}
+    {{ combined_media }}
     <script src="{% static 'mizdb_inlines/js/mizdb_inlines.js' %}"></script>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
@@ -76,9 +75,9 @@ class MyView(InlineFormsetMixin, UpdateView):
 ```
 
 This will add formset instances to the template context with the context variable `formsets`. 
-The combined media of the formsets is available with the variable `formset_media` :
+The combined media of the formsets and the view's model form is available with the variable `combined_media` :
 ```html
-{{ formset_media }}
+{{ combined_media }}
 
 {% for formset in formsets %}
     {% inline_formset formset %}
