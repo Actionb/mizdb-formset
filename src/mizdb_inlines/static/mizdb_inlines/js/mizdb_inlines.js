@@ -110,6 +110,7 @@ window.addEventListener("DOMContentLoaded", () => {
             formset.insertBefore(newForm, addRow)
             const deleteButton = newForm.querySelector(".inline-delete-btn")
             if (deleteButton) deleteHandler(deleteButton)
+            newForm.scrollIntoView()
 
             // Update management form and set the prefixes of the new form.
             const count = getTotalCount(formset) + 1

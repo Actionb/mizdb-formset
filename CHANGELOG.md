@@ -1,5 +1,9 @@
 # Changelog
 
+## [unreleased]
+
+- scroll new forms into view when clicking the add button 
+
 ## 0.2.3 (2023-09-07)
 
 ### Changed
