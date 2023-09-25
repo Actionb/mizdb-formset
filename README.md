@@ -46,12 +46,20 @@ Add `mizdb_inlines/js/mizdb_inlines.js` javascript and render the formset using 
 
     {% bootstrap_form form %}
     {% inline_formset formset layout="horizontal" %}
-    {% bootstrap_button button_type="submit" button_class="success" content="Save" %}
-    {% bootstrap_button button_type="reset" button_class="warning" content="Reset" %}
+    {% bootstrap_button button_type="submit" button_class="btn-success" content="Save" %}
+    {% bootstrap_button button_type="reset" button_class="btn-warning" content="Reset" %}
 </form>
 </body>
 </html>
 ```
+The template tag instantiates an `InlineFormsetRenderer` and returns the renderers `render()` output. 
+The template tag passes all keyword arguments along to the renderer. 
+The renderer takes an additional keyword argument `add_text` with which you can set the text of the add button (defaults to the verbose name of the inline formset model).
+For example, in a template:
+```html
+{% inline_formset formset layout="horizontal" add_text="Add another delicious Topping" %}
+```
+
 
 ### View mixin for inline formsets
 
