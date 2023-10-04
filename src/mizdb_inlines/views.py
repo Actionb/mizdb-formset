@@ -12,7 +12,11 @@ class InlineFormsetMixin(ModelFormMixin):
 
     def get_formset_kwargs(self):
         """Hook to add additional keyword arguments for the formsets."""
-        return self.get_form_kwargs()
+        request = self.request  # noqa
+        if request.method in ("POST", "PUT"):
+            return {"data": request.POST, "files": request.FILES}
+        else:
+            return {}
 
     def get_formset_classes(self):
         """Return a list of formset classes."""

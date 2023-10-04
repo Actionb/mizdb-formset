@@ -1,8 +1,11 @@
 # Changelog
 
-## [unreleased]
+## 0.2.4 (2023-10-04)
 
-- scroll new forms into view when clicking the add button 
+- scroll new forms into view when clicking the add button
+- InlineFormsetMixin: do not use form kwargs as formset kwargs. 
+The `initial` argument for formsets must be a list of dicts, whereas for forms it must be a dict. Re-using the kwargs from `get_form_kwargs` on a formset
+resulted in an error, because `initial` (if specified by the view) would be a dict.
 
 ## 0.2.3 (2023-09-07)
 
