@@ -1,5 +1,9 @@
 # Changelog
 
+## [unreleased] (2023-10-06)
+
+- delete button now disables/enables select form elements  
+
 ## 0.2.4 (2023-10-04)
 
 - scroll new forms into view when clicking the add button

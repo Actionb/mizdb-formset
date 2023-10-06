@@ -81,7 +81,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 form.classList.toggle("marked-for-removal")
                 const checkbox = form.querySelector(".delete-cb")
                 checkbox.checked = !checkbox.checked
-                form.querySelectorAll(".form-control").forEach((elem) => {
+                form.querySelectorAll(".form-control,.form-select").forEach((elem) => {
                     if (removing && !elem.disabled) {
                         // Currently marking the form for removal, and the elem 
                         // was not already disabled (do not mess with already 

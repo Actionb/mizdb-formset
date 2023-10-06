@@ -1,4 +1,4 @@
-from django.forms import inlineformset_factory
+from django import forms
 from django.views.generic import UpdateView
 
 from tests.testapp.models import Contact, PhoneNumber
@@ -15,7 +15,13 @@ class ContactView(UpdateView):
         return self.request.path
 
     def get_formset_class(self):
-        return inlineformset_factory(Contact, PhoneNumber, fields=["label", "number"], extra=2)
+        return forms.inlineformset_factory(
+            Contact,
+            PhoneNumber,
+            fields=["label", "number"],
+            widgets={"label": forms.Select(choices=[("", "-----"), ("Home", "Home"), ("Work", "Work")])},
+            extra=2,
+        )
 
     def get_formset(self, **kwargs):
         return self.get_formset_class()(instance=self.object, prefix=FORMSET_PREFIX, **kwargs)

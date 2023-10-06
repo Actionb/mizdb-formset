@@ -1,4 +1,4 @@
-from django.forms import inlineformset_factory
+from django import forms
 from django.views.generic import UpdateView
 
 from mizdb_inlines.views import InlineFormsetMixin
@@ -12,7 +12,15 @@ class ContactView(InlineFormsetMixin, UpdateView):
     template_name = "contact.html"
     success_url = "/"
 
-    formset_classes = (inlineformset_factory(Contact, PhoneNumber, fields=["label", "number"], extra=1),)
+    formset_classes = (
+        forms.inlineformset_factory(
+            Contact,
+            PhoneNumber,
+            fields=["label", "number"],
+            widgets={"label": forms.Select(choices=[("", "-----"), ("Home", "Home"), ("Work", "Work")])},
+            extra=1,
+        ),
+    )
 
     def setup(self, *args, **kwargs):
         super().setup(*args, **kwargs)

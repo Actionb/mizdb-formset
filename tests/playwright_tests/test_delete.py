@@ -41,7 +41,7 @@ def test_form_marked_for_removal(first_form_delete_button, first_form):
 def test_form_disabled(first_form, first_form_delete_button):
     """Assert that clicking the 'delete' button disables the form controls."""
     first_form_delete_button.click()
-    for elem in first_form.locator(".form-control").all():
+    for elem in first_form.locator(".form-control,.form-select").all():
         expect(elem).to_be_disabled()
 
 
@@ -49,7 +49,7 @@ def test_form_enabled(first_form, first_form_delete_button):
     """Assert that clicking the 'delete' button again enables the form controls."""
     first_form_delete_button.click()
     first_form_delete_button.click()
-    for elem in first_form.locator(".form-control").all():
+    for elem in first_form.locator(".form-control,.form-select").all():
         expect(elem).to_be_enabled()
 
 
