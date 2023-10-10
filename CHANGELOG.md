@@ -3,7 +3,10 @@
 ## [unreleased] (2023-10-06)
 
 - delete button now disables/enables select form elements
-- rework InlineFormsetMixin: check formset validity in `post` method instead of `form_valid`
+- rework InlineFormsetMixin:
+  - check formset validity in `post` method instead of `form_valid`
+  - save formsets in `post` method instead of in `formset_valid`
+  - replace `formset_valid` hook with `post_save` hook
 
 ## 0.2.4 (2023-10-04)
 

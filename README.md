@@ -92,6 +92,17 @@ The combined media of the formsets and the view's model form is available with t
 {% endfor %}
 ```
 
+To perform additional actions after the form and formsets have been saved, you can use 
+the `post_save` hook:
+```python
+class MyView(InlineFormsetMixin, UpdateView):
+    ...
+    
+    def post_save(self, form, formsets):
+        # Log that the form was saved:
+        create_logentry(form, formsets)
+```
+
 ## Development & Demo
 
 ```bash

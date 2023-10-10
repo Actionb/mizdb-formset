@@ -147,18 +147,6 @@ def template_context(view, view_object):
 @pytest.mark.django_db
 @pytest.mark.parametrize("view_class", [FormsetUpdateView, FormsetCreateView])
 class TestInlineFormsetMixin:
-    @pytest.mark.parametrize("form_valid, formset_valid", [(True, True)])
-    def test_form_valid_formsets_valid(self, view, form_valid, formset_valid):
-        """
-        Assert that `formsets_valid` and `form_valid` are called if both the
-        forms and the formsets are valid.
-        """
-        with patch.object(FormMixin, "form_valid") as super_form_valid_mock:
-            with patch.object(view, "formsets_valid") as formsets_valid_mock:
-                view.post(view.request)
-                super_form_valid_mock.assert_called()
-                formsets_valid_mock.assert_called()
-
     @pytest.mark.parametrize("form_valid, formset_valid", [(True, False)])
     def test_form_valid_formsets_invalid(self, view, form_valid, formset_valid):
         """

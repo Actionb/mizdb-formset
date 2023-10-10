@@ -39,10 +39,6 @@ class InlineFormsetMixin(ModelFormMixin):
             ctx["combined_media"] += reduce(operator.add, (fs.media for fs in ctx["formsets"]))
         return ctx
 
-    def formsets_valid(self, formsets):
-        """Hook to perform additional actions on the valid formsets."""
-        [formset.save() for formset in formsets]
-
     def post(self, request, *args, **kwargs):
         """
         Validate the form and the formsets and return a response from either
@@ -55,7 +51,14 @@ class InlineFormsetMixin(ModelFormMixin):
             # Save the formsets.
             # If the form is valid, the form will have already been saved with
             # form_valid.
-            self.formsets_valid(formsets)
+            [formset.save() for formset in formsets]
+            self.post_save(form, formsets)
             return response
         else:
             return self.form_invalid(form)
+
+    def post_save(self, form, formsets):
+        """
+        Hook for performing additional actions after form and formsets have
+        been saved.
+        """
