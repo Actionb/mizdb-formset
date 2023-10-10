@@ -169,13 +169,6 @@ class TestInlineFormsetMixin:
             view.post(view.request)
             form_invalid_mock.assert_called()
 
-    @pytest.mark.parametrize("form_valid", [False])
-    def test_form_invalid(self, view, form_valid):
-        """Assert that the formsets are validated when the form is invalid."""
-        with patch.object(view.formset_classes[0], "full_clean") as full_clean_mock:
-            view.post(view.request)
-            full_clean_mock.assert_called()
-
     def test_formsets_added_to_context(self, template_context):
         """Assert that the formsets are added to the template context."""
         assert "formsets" in template_context
@@ -184,6 +177,12 @@ class TestInlineFormsetMixin:
         """Assert that the formset media is added to the template context."""
         assert "combined_media" in template_context
         assert "should/be/included" in template_context["combined_media"]._js
+
+    @pytest.mark.parametrize("form_valid, formset_valid", [(True, True)])
+    def test_form_saved(self, view, form_valid, formset_valid):
+        """Assert that the form is saved if everything is valid."""
+        view.post(view.request)
+        assert view.object.first_name == "Bob"  # was "Alice"
 
     @pytest.mark.parametrize("form_valid, formset_valid", [(True, True)])
     def test_formset_saved(self, view, form_valid, formset_valid):

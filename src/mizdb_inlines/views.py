@@ -43,16 +43,19 @@ class InlineFormsetMixin(ModelFormMixin):
         """Hook to perform additional actions on the valid formsets."""
         [formset.save() for formset in formsets]
 
-    def form_valid(self, form):
+    def post(self, request, *args, **kwargs):
+        """
+        Validate the form and the formsets and return a response from either
+        form_valid or form_invalid.
+        """
+        response = super().post(request, *args, **kwargs)  # noqa
+        form = self.get_form()
         formsets = self.get_formsets(form.instance)
-        if all_valid(formsets):
-            response = super().form_valid(form)  # save the form
-            self.formsets_valid(formsets)  # save the formsets
+        if form.is_valid() and all_valid(formsets):
+            # Save the formsets.
+            # If the form is valid, the form will have already been saved with
+            # form_valid.
+            self.formsets_valid(formsets)
             return response
         else:
             return self.form_invalid(form)
-
-    def form_invalid(self, form):
-        formsets = self.get_formsets(form.instance)
-        [formset.full_clean() for formset in formsets]  # generate formset.errors
-        return super().form_invalid(form)
