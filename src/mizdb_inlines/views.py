@@ -1,8 +1,14 @@
+import dataclasses
 import operator
 from functools import reduce
 
-from django.forms import all_valid
+from django.forms import Form, all_valid
 from django.views.generic.edit import ModelFormMixin
+
+
+@dataclasses.dataclass
+class FormsetInvalidSentinel:
+    form: Form
 
 
 class InlineFormsetMixin(ModelFormMixin):
@@ -39,23 +45,29 @@ class InlineFormsetMixin(ModelFormMixin):
             ctx["combined_media"] += reduce(operator.add, (fs.media for fs in ctx["formsets"]))
         return ctx
 
+    def form_valid(self, form):
+        formsets = self.get_formsets(form.instance)
+        if all_valid(formsets):
+            response = super().form_valid(form)  # save the form
+            [formset.save() for formset in formsets]  # save formsets
+            self.post_save(form, formsets)
+            return response
+        else:
+            # Form is valid, but a formset is not. Back out of the form_valid
+            # chain and let post() call form_invalid instead.
+            return FormsetInvalidSentinel(form)
+
     def post(self, request, *args, **kwargs):
         """
         Validate the form and the formsets and return a response from either
         form_valid or form_invalid.
         """
-        response = super().post(request, *args, **kwargs)  # noqa
-        form = self.get_form()
-        formsets = self.get_formsets(form.instance)
-        if form.is_valid() and all_valid(formsets):
-            # Save the formsets.
-            # If the form is valid, the form will have already been saved with
-            # form_valid.
-            [formset.save() for formset in formsets]
-            self.post_save(form, formsets)
-            return response
+        response = super().post(request, *args, **kwargs)
+        if isinstance(response, FormsetInvalidSentinel):
+            # Sentinel returned by form_valid when a formset was invalid.
+            return self.form_invalid(response.form)
         else:
-            return self.form_invalid(form)
+            return response
 
     def post_save(self, form, formsets):
         """

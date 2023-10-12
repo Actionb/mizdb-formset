@@ -177,3 +177,12 @@ class TestInlineFormsetMixin:
         """Assert that the formsets are saved if everything is valid."""
         view.post(view.request)
         assert ("Home", "1234") in view.object.phone_numbers.values_list("label", "number")
+
+    @pytest.mark.parametrize("form_valid, formset_valid", [(True, False)])
+    def test_form_not_saved_when_formset_invalid(self, view, form_valid, formset_valid):
+        """
+        Assert that the form instance is not saved when there are invalid
+        formsets.
+        """
+        view.post(view.request)
+        assert not Contact.objects.filter(first_name="Bob").exists()

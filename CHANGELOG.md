@@ -1,5 +1,9 @@
 # Changelog
 
+## [unreleased]
+
+- fix form being saved even with invalid formsets
+
 ## 0.2.5 (2023-10-10)
 
 - delete button now disables/enables select form elements
