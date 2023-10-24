@@ -1,8 +1,8 @@
 # Changelog
 
-## [unreleased]
+## 0.2.6 (2023-10-24)
 
-- fix form being saved even with invalid formsets
+- fix form being saved when formsets are invalid
 
 ## 0.2.5 (2023-10-10)
 
