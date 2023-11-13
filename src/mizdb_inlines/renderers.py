@@ -34,7 +34,7 @@ class DeleteFieldRenderer(FieldRenderer):
 
     def get_button_class(self):
         """Return the CSS classes for the delete button."""
-        return "btn p-0 w-100 text-danger inline-delete-btn"
+        return "btn btn-link w-100 text-danger inline-delete-btn"
 
     def get_button_title(self):
         """Return the title attribute for the delete button."""
