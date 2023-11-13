@@ -125,14 +125,21 @@ window.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".marked-for-removal").forEach((form) => form.classList.remove("marked-for-removal"))
         document.querySelectorAll(".disabled-for-removal").forEach((elem) => enableElem(elem))
     })
-    const deleteStyle = document.createElement("style")
+    const inlineStyle = document.createElement("style")
     // Insert at the very top so that the style can be overwritten.
-    document.head.insertBefore(deleteStyle, document.head.firstChild)
-    deleteStyle.sheet.insertRule(`.marked-for-removal {
-        color: gray;
-        background-color: lightgray;
-        background-image: repeating-linear-gradient(-45deg, transparent, transparent 4px, rgba(255, 255, 255, 0.5) 4px, rgba(255, 255, 255, 0.5) 8px);
-        background-size: contain;
-        cursor: not-allowed;
-    }`)
+    document.head.insertBefore(inlineStyle, document.head.firstChild)
+    inlineStyle.sheet.insertRule(`
+        .formset-container > .form-container:hover:not(.marked-for-removal) {
+            background: rgba(var(--bs-emphasis-color-rgb), 0.075);
+        }
+    `)
+    inlineStyle.sheet.insertRule(`
+        .marked-for-removal {
+            color: var(--bs-secondary-color);
+            background-color: var(--bs-secondary-bg);
+            background-image: repeating-linear-gradient(-45deg, transparent 0 5px, var(--bs-body-bg) 0 10px);
+            background-size: contain;
+            cursor: not-allowed;
+        }
+    `)
 })
