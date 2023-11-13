@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.7 (2023-11-08)
+
+- change inline delete button image
+
 ## 0.2.6 (2023-10-24)
 
 - fix form being saved when formsets are invalid
