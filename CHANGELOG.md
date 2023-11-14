@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.8 (2023-11-14)
+
+- tweak CSS: add hover for formsets and change marked-for-removal rules
+
 ## 0.2.7 (2023-11-08)
 
 - change inline delete button image
