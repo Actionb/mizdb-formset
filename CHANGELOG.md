@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1 (2024-06-15)
+
+- add missing template for `tabular_inline_formset` tag
+
 ## 0.3.0 (2024-06-15)
 
 - add `tabular_inline_formset` tag
