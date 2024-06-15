@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0 (2024-06-15)
+
+- add `tabular_inline_formset` tag
+
 ## 0.2.8 (2023-11-14)
 
 - tweak CSS: add hover for formsets and change marked-for-removal rules
