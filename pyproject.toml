@@ -30,7 +30,7 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-"*" = ["*.js", "*.css"]
+"*" = ["*.js", "*.css", "*.html"]
 
 [tool.black]
 line-length = 120
