@@ -1,5 +1,5 @@
-Django==4.2.4
-django-bootstrap5==23.3
+Django==5.0.6
+django-bootstrap5
 black==23.7.0
 ruff==0.0.286
 coverage==7.3.0
