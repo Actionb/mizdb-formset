@@ -9,7 +9,7 @@ reformat:
 
 .PHONY: lint
 lint:
-	ruff . --no-fix
+	ruff check . --no-fix
 	black . --check
 
 .PHONY: build

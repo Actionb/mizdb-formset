@@ -40,6 +40,8 @@ target_version = ["py39", "py310", "py311"]
 src = ["src"]
 target-version = "py311"
 line-length = 120
+
+[tool.ruff.lint]
 select = [
     "D",        # pydocstyle
     "E", "W",   # pycodestyle
@@ -53,8 +55,8 @@ ignore = [
     "D212",  # D212: Multi-line docstring summary should start at the first line
 ]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.pycodestyle]
+[tool.ruff.lint.pycodestyle]
 max-doc-length = 88

@@ -1,7 +1,7 @@
 Django==5.0.6
 django-bootstrap5==24.2
-black==23.7.0
-ruff==0.0.286
+black==24.4.2
+ruff==0.4.9
 coverage==7.5.3
 pytest==8.2.2
 pytest-django==4.8.0
