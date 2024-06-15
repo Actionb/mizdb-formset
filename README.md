@@ -103,6 +103,17 @@ class MyView(InlineFormsetMixin, UpdateView):
         create_logentry(form, formsets)
 ```
 
+### Tabular inline formset
+
+If you prefer the formset fields to be in a tabular layout, you can use the `tabular_inline_formset` template tag instead:
+```html
+{% load mizdb_inlines %}
+
+{% for formset in formsets %}
+    {% tabular_inline_formset formset %}
+{% endfor %}
+```
+
 ## Development & Demo
 
 ```bash
