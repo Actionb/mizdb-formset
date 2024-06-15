@@ -2,7 +2,7 @@ import pytest
 from bs4 import BeautifulSoup
 from django.forms import inlineformset_factory
 
-from mizdb_inlines.renderers import InlineFormRenderer, InlineFormsetRenderer
+from mizdb_inlines.renderers import InlineFormRenderer, InlineFormsetRenderer, TabularInlineFormRenderer
 from tests.testapp.models import Contact, PhoneNumber
 from tests.testapp.views import FORMSET_PREFIX
 
@@ -239,3 +239,15 @@ class TestInlineFormsetRenderer:
     def test_form_template_has_extra_class(self, empty_form):
         """Assert that the empty form template has the expected CSS class."""
         assert "extra-form" in empty_form.attrs["class"]
+
+
+class TestTabularInlineFormRenderer:
+
+    @pytest.fixture
+    def form_renderer(self, form):
+        return TabularInlineFormRenderer(form)
+
+    @pytest.mark.parametrize("css_class", ["col", "fields-container", "row"])
+    def test_field_container_css_classes(self, field_container, css_class):
+        """Assert that the field container div contains the expected CSS classes."""
+        assert css_class in field_container.attrs["class"]

@@ -203,3 +203,19 @@ class InlineFormsetRenderer(FormsetRenderer):
             html=super().render(),
             add_row=self.get_add_row_html(),
         )
+
+
+class TabularInlineFormRenderer(InlineFormRenderer):
+    """Renderer for inline forms that renders all fields in a row."""
+
+    def get_field_container_class(self):
+        return "col fields-container row"
+
+
+class TabularInlineFormsetRenderer(InlineFormsetRenderer):
+    form_renderer = TabularInlineFormRenderer
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("wrapper_class", "my-2 col")
+        kwargs.setdefault("show_label", False)
+        super().__init__(*args, **kwargs)
