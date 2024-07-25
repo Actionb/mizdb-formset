@@ -26,7 +26,8 @@ INSTALLED_APPS = [
 
 ## Usage
 
-Add `mizdb_inlines/js/mizdb_inlines.js` javascript and render the formset using the `inline_formset` template tag from the `mizdb_inlines` template tag library:
+Add `mizdb_inlines/js/mizdb_inlines.js` javascript and render the formset using the `inline_formset` template tag from
+the `mizdb_inlines` template tag library:
 
 ```html
 <!DOCTYPE html>
@@ -52,18 +53,20 @@ Add `mizdb_inlines/js/mizdb_inlines.js` javascript and render the formset using 
 </body>
 </html>
 ```
-The template tag instantiates an `InlineFormsetRenderer` and returns the renderers `render()` output. 
-The template tag passes all keyword arguments along to the renderer. 
-The renderer takes an additional keyword argument `add_text` with which you can set the text of the add button (defaults to the verbose name of the inline formset model).
+
+The template tag instantiates an `InlineFormsetRenderer` and returns the renderers `render()` output.
+The template tag passes all keyword arguments along to the renderer.
+The renderer takes an additional keyword argument `add_text` with which you can set the text of the add button (defaults
+to the verbose name of the inline formset model).
 For example, in a template:
+
 ```html
 {% inline_formset formset layout="horizontal" add_text="Add another delicious Topping" %}
 ```
 
-
 ### View mixin for inline formsets
 
-Use the `InlineFormsetMixin` view mixin to remove some of the boilerplate from handling inline formsets. 
+Use the `InlineFormsetMixin` view mixin to remove some of the boilerplate from handling inline formsets.
 Simply declare the formset classes to use in the `formset_classes` attribute.
 
 ```python
@@ -82,22 +85,24 @@ class MyView(InlineFormsetMixin, UpdateView):
     )
 ```
 
-This will add formset instances to the template context with the context variable `formsets`. 
+This will add formset instances to the template context with the context variable `formsets`.
 The combined media of the formsets and the view's model form is available with the variable `combined_media` :
+
 ```html
 {{ combined_media }}
 
 {% for formset in formsets %}
-    {% inline_formset formset %}
+{% inline_formset formset %}
 {% endfor %}
 ```
 
-To perform additional actions after the form and formsets have been saved, you can use 
+To perform additional actions after the form and formsets have been saved, you can use
 the `post_save` hook:
+
 ```python
 class MyView(InlineFormsetMixin, UpdateView):
     ...
-    
+
     def post_save(self, form, formsets):
         # Log that the form was saved:
         create_logentry(form, formsets)
@@ -105,12 +110,14 @@ class MyView(InlineFormsetMixin, UpdateView):
 
 ### Tabular inline formset
 
-If you prefer the formset fields to be in a tabular layout, you can use the `tabular_inline_formset` template tag instead:
+If you prefer the formset fields to be in a tabular layout, you can use the `tabular_inline_formset` template tag
+instead:
+
 ```html
 {% load mizdb_inlines %}
 
 {% for formset in formsets %}
-    {% tabular_inline_formset formset %}
+{% tabular_inline_formset formset %}
 {% endfor %}
 ```
 
