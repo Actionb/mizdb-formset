@@ -2,6 +2,10 @@
 test:
 	pytest --cov --cov-branch --cov-config=./tests/.coveragerc --cov-report=term-missing -n auto tests
 
+.PHONY: test-pw
+test-pw:
+	pytest --browser firefox --browser chromium tests/playwright_tests
+
 .PHONY: reformat
 reformat:
 	ruff check . --fix

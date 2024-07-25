@@ -124,4 +124,24 @@ make init
 
 See the demo for a preview: run `make init-demo` and then start the demo server `python demo/manage.py runserver`.
 
-Run tests with `make test`. To install required browsers for playwright: `playwright install`.
+### Tests
+
+Run tests with:
+
+```shell
+make test
+```
+
+#### Playwright
+
+Before you can run playwright tests, install the required browsers:
+
+```shell
+playwright install
+```
+
+To run the playwright tests, use:
+
+```shell
+make test-pw
+```
